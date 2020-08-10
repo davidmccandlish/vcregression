@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Implementation &mdash; vcregression 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://vcregression.readthedocs.ioimplementation.html"/>
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Tutorial" href="smn1.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> vcregression
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howtouse.html">How to use vc_regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#notes-on-the-upper-limit-of-the-size-sequence-space">Notes on the upper limit of the size sequence space</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataprep.html">Data preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataprep.html#example">example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="smn1.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#data-preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#estimation-of-variance-components">Estimation of variance components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#map-estimate">MAP estimate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#estimate-posterior-variance">Estimate posterior variance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#posterior-sampling-using-hamiltonian-monte-carlo">Posterior sampling using Hamiltonian Monte Carlo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#the-hmc-algorithm">The HMC algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#how-to-use-vc-hmc-py">How to use <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#running-the-hmc-sampling">Running the HMC sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#convergence-diagnostics">Convergence diagnostics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#vc-prep-py"><code class="docutils literal notranslate"><span class="pre">vc_prep.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#output-files">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#vc-map-estimate-py"><code class="docutils literal notranslate"><span class="pre">vc_map_estimate.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#output-file">Output file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#vc-pos-var-py"><code class="docutils literal notranslate"><span class="pre">vc_pos_var.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#input-sequences">input sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Output file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#vc-hmc-py"><code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#vc-hmc-diagnosis-py"><code class="docutils literal notranslate"><span class="pre">vc_hmc_diagnosis.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">vcregression</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Implementation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/implementation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="implementation">
+<span id="implementations"></span><h1>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="vc-prep-py">
+<h2><code class="docutils literal notranslate"><span class="pre">vc_prep.py</span></code><a class="headerlink" href="#vc-prep-py" title="Permalink to this headline">¶</a></h2>
+<p>This <em>CLI</em> estimates the prior <strong>lambdas</strong> which is needed for all subsequent analyses.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">vc_prep</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">name</span> <span class="n">NAME</span><span class="p">]</span> <span class="o">-</span><span class="n">data</span> <span class="n">DATA</span> <span class="p">[</span><span class="o">-</span><span class="n">cv</span> <span class="n">CV</span><span class="p">]</span> <span class="n">a</span> <span class="n">l</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>a</kbd></dt>
+<dd><p>alphabet size</p>
+</dd>
+<dt><kbd>l</kbd></dt>
+<dd><p>sequence length</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>-name</kbd></dt>
+<dd><p>name of output folder</p>
+</dd>
+<dt><kbd>-data</kbd></dt>
+<dd><p>path to input data</p>
+</dd>
+<dt><kbd>-cv</kbd></dt>
+<dd><p>estimate lambdas using regularization with regularization parameter chosen with 10-fold crossvalidation</p>
+<p>Default: True</p>
+</dd>
+</dl>
+</div>
+</div></blockquote>
+<div class="section" id="output-files">
+<h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
+<p>Running this command will output a .csv file <code class="docutils literal notranslate"><span class="pre">lambdas.csv</span></code> in the output directory. This file contains the optimal <em>lambdas</em>. Here is an example <code class="docutils literal notranslate"><span class="pre">lambdas.csv</span></code> file:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>order_0</p></td>
+<td><p>3356027.47</p></td>
+</tr>
+<tr class="row-even"><td><p>order_1</p></td>
+<td><p>153814.18</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_2</p></td>
+<td><p>44970.01</p></td>
+</tr>
+<tr class="row-even"><td><p>order_3</p></td>
+<td><p>3453.46</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_4</p></td>
+<td><p>363.17</p></td>
+</tr>
+<tr class="row-even"><td><p>order_5</p></td>
+<td><p>318.42</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_6</p></td>
+<td><p>68.85</p></td>
+</tr>
+<tr class="row-even"><td><p>order_7</p></td>
+<td><p>43.17</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_8</p></td>
+<td><p>29.17</p></td>
+</tr>
+</tbody>
+</table>
+<p>This CLI also outputs an <code class="docutils literal notranslate"><span class="pre">variance_component.txt</span></code> file. Here is an example:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>order_1</p></td>
+<td><p>0.127</p></td>
+</tr>
+<tr class="row-even"><td><p>order_2</p></td>
+<td><p>0.390</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_3</p></td>
+<td><p>0.180</p></td>
+</tr>
+<tr class="row-even"><td><p>order_4</p></td>
+<td><p>0.071</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_5</p></td>
+<td><p>0.149</p></td>
+</tr>
+<tr class="row-even"><td><p>order_6</p></td>
+<td><p>0.048</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_7</p></td>
+<td><p>0.026</p></td>
+</tr>
+<tr class="row-even"><td><p>order_8</p></td>
+<td><p>0.006</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="vc-map-estimate-py">
+<h2><code class="docutils literal notranslate"><span class="pre">vc_map_estimate.py</span></code><a class="headerlink" href="#vc-map-estimate-py" title="Permalink to this headline">¶</a></h2>
+<p>This <em>CLI</em> calculates the <strong>maximum a posterior (MAP) estimate</strong></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">vc_map_estimate</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">name</span> <span class="n">NAME</span><span class="p">]</span> <span class="o">-</span><span class="n">data</span> <span class="n">DATA</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">LAMBDAS</span> <span class="n">a</span> <span class="n">l</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>a</kbd></dt>
+<dd><p>alphabet size</p>
+</dd>
+<dt><kbd>l</kbd></dt>
+<dd><p>sequence length</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>-name</kbd></dt>
+<dd><p>name of output folder</p>
+</dd>
+<dt><kbd>-data</kbd></dt>
+<dd><p>path to input data</p>
+</dd>
+<dt><kbd>-lambdas</kbd></dt>
+<dd><p>path to lambdas</p>
+</dd>
+</dl>
+</div>
+</div></blockquote>
+<div class="section" id="output-file">
+<h3>Output file<a class="headerlink" href="#output-file" title="Permalink to this headline">¶</a></h3>
+<p>Executing this command output the MAP estimate <code class="docutils literal notranslate"><span class="pre">map.csv</span></code>. Here is the top 10 rows of an example:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>sequence</p></td>
+<td><p>phenotype</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAAAA</p></td>
+<td><p>2.038</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAAAC</p></td>
+<td><p>1.887</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAAAG</p></td>
+<td><p>3.017</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAAAU</p></td>
+<td><p>3.021</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAACA</p></td>
+<td><p>4.438</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAACC</p></td>
+<td><p>2.237</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAACG</p></td>
+<td><p>4.232</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAACU</p></td>
+<td><p>2.520</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAAGA</p></td>
+<td><p>34.346</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAAGC</p></td>
+<td><p>34.681</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="vc-pos-var-py">
+<h2><code class="docutils literal notranslate"><span class="pre">vc_pos_var.py</span></code><a class="headerlink" href="#vc-pos-var-py" title="Permalink to this headline">¶</a></h2>
+<p>This <em>CLI</em> calculates the <strong>analytical posterior variance</strong> for a list of sequences.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">vc_pos_var</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">name</span> <span class="n">NAME</span><span class="p">]</span> <span class="o">-</span><span class="n">data</span> <span class="n">DATA</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">LAMBDAS</span> <span class="o">-</span><span class="n">seqsvar</span> <span class="n">SEQSVAR</span> <span class="n">a</span> <span class="n">l</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>a</kbd></dt>
+<dd><p>alphabet size</p>
+</dd>
+<dt><kbd>l</kbd></dt>
+<dd><p>sequence length</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>-name</kbd></dt>
+<dd><p>name of output folder</p>
+</dd>
+<dt><kbd>-data</kbd></dt>
+<dd><p>path to input data</p>
+</dd>
+<dt><kbd>-lambdas</kbd></dt>
+<dd><p>path to lambdas</p>
+</dd>
+<dt><kbd>-seqsvar</kbd></dt>
+<dd><p>list of sequences for calculating posterior variances</p>
+</dd>
+</dl>
+</div>
+</div></blockquote>
+<div class="section" id="input-sequences">
+<h3>input sequences<a class="headerlink" href="#input-sequences" title="Permalink to this headline">¶</a></h3>
+<p>The user needs to specify the sequences for which to estimate the posterior variance. The sequences needs to be provided in a <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file with one sequence per row. For example</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>AAAUGAUA</p></td>
+</tr>
+<tr class="row-even"><td><p>CAUUCGUC</p></td>
+</tr>
+<tr class="row-odd"><td><p>UAGCGUCU</p></td>
+</tr>
+<tr class="row-even"><td><p>GCGCGAUC</p></td>
+</tr>
+<tr class="row-odd"><td><p>AACCACGU</p></td>
+</tr>
+<tr class="row-even"><td><p>CGACUCGA</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCCCGUUU</p></td>
+</tr>
+<tr class="row-even"><td><p>CAACGCAA</p></td>
+</tr>
+<tr class="row-odd"><td><p>CGCUAGGA</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAUCGAG</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id1">
+<h3>Output file<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Executing this command will ouput a <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file named <code class="docutils literal notranslate"><span class="pre">varpos.txt</span></code>.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 63%" />
+<col style="width: 38%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>sequence</p></td>
+<td><p>variance</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAUGAUA</p></td>
+<td><p>0.082</p></td>
+</tr>
+<tr class="row-odd"><td><p>CAUUCGUC</p></td>
+<td><p>0.576</p></td>
+</tr>
+<tr class="row-even"><td><p>UAGCGUCU</p></td>
+<td><p>0.023</p></td>
+</tr>
+<tr class="row-odd"><td><p>GCGCGAUC</p></td>
+<td><p>108.691</p></td>
+</tr>
+<tr class="row-even"><td><p>AACCACGU</p></td>
+<td><p>1.879</p></td>
+</tr>
+<tr class="row-odd"><td><p>CGACUCGA</p></td>
+<td><p>9.012</p></td>
+</tr>
+<tr class="row-even"><td><p>UCCCGUUU</p></td>
+<td><p>0.370</p></td>
+</tr>
+<tr class="row-odd"><td><p>CAACGCAA</p></td>
+<td><p>0.290</p></td>
+</tr>
+<tr class="row-even"><td><p>CGCUAGGA</p></td>
+<td><p>0.087</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAUCGAG</p></td>
+<td><p>88.807</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="vc-hmc-py">
+<h2><code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code><a class="headerlink" href="#vc-hmc-py" title="Permalink to this headline">¶</a></h2>
+<p>This <em>CLI</em> is used to perform <strong>posterior sampling</strong> using the <em>Hamitonian Monte Carlo method</em>.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">vc_hmc</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">name</span> <span class="n">NAME</span><span class="p">]</span> <span class="o">-</span><span class="n">data</span> <span class="n">DATA</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">LAMBDAS</span> <span class="p">[</span><span class="o">-</span><span class="n">MAP</span> <span class="n">MAP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">step_size</span> <span class="n">STEP_SIZE</span><span class="p">]</span> <span class="o">-</span><span class="n">n_steps</span> <span class="n">N_STEPS</span>
+              <span class="o">-</span><span class="n">n_samples</span> <span class="n">N_SAMPLES</span> <span class="p">[</span><span class="o">-</span><span class="n">n_tunes</span> <span class="n">N_TUNES</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">starting_position</span> <span class="p">{</span><span class="n">mode</span><span class="p">,</span><span class="n">random</span><span class="p">,</span><span class="n">custom</span><span class="p">}]</span>
+              <span class="p">[</span><span class="o">-</span><span class="n">starting_position_path</span> <span class="n">QPATH</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">intermediate_output</span> <span class="n">INTERMEDIATE_OUTPUT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">sample_name</span> <span class="n">SAMPLE_NAME</span><span class="p">]</span>
+              <span class="n">a</span> <span class="n">l</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>a</kbd></dt>
+<dd><p>alphabet size</p>
+</dd>
+<dt><kbd>l</kbd></dt>
+<dd><p>sequence length</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>-name</kbd></dt>
+<dd><p>name of output folder</p>
+</dd>
+<dt><kbd>-data</kbd></dt>
+<dd><p>path to input data</p>
+</dd>
+<dt><kbd>-lambdas</kbd></dt>
+<dd><p>path to lambdas</p>
+</dd>
+<dt><kbd>-MAP</kbd></dt>
+<dd><p>path to MAP estimate</p>
+</dd>
+<dt><kbd>-step_size</kbd></dt>
+<dd><p>initial leapfrog stepsize</p>
+<p>Default: 1e-06</p>
+</dd>
+<dt><kbd>-n_steps</kbd></dt>
+<dd><p>number of leapfrog steps per iteration</p>
+</dd>
+<dt><kbd>-n_samples</kbd></dt>
+<dd><p>number of samples to draw from the posterior</p>
+</dd>
+<dt><kbd>-n_tunes</kbd></dt>
+<dd><p>number of HMC steps used for tuning the step_size parameter</p>
+<p>Default: 100</p>
+</dd>
+<dt><kbd>-starting_position</kbd></dt>
+<dd><p>Possible choices: mode, random, custom</p>
+<p>starting position</p>
+<p>Default: “mode”</p>
+</dd>
+<dt><kbd>-starting_position_path</kbd></dt>
+<dd><p>path to starting position vector if using custom starting position</p>
+</dd>
+<dt><kbd>-intermediate_output</kbd></dt>
+<dd><p>output intemediate samples and variance</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-sample_name</kbd></dt>
+<dd><p>name of the hmc sample</p>
+</dd>
+</dl>
+</div>
+</div></blockquote>
+<div class="section" id="id2">
+<h3>Output files<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>This command output 3 files:</p>
+<div class="section" id="summary-file">
+<h4>Summary file<a class="headerlink" href="#summary-file" title="Permalink to this headline">¶</a></h4>
+<p>This is a file with the suffix <code class="docutils literal notranslate"><span class="pre">_hmc_summary.txt</span></code> containing parameters for the HMC run.
+Here is an example of a file’s content:</p>
+</div>
+<div class="section" id="sample-file">
+<h4>Sample file<a class="headerlink" href="#sample-file" title="Permalink to this headline">¶</a></h4>
+<p>This is a file with the suffix <code class="docutils literal notranslate"><span class="pre">_hmc_sample.txt</span></code> containing all HMC samples of the run. The number of columns is equal to the number of HMC samples specified by the user and the number of rows is equal to the total number of possible sequences.</p>
+</div>
+<div class="section" id="variance-file">
+<h4>Variance file<a class="headerlink" href="#variance-file" title="Permalink to this headline">¶</a></h4>
+<p>This is a file with the suffix <code class="docutils literal notranslate"><span class="pre">_hmc_variances.txt</span></code> containing the variance of all sequences calculated using the HMC samples.</p>
+</div>
+</div>
+</div>
+<div class="section" id="vc-hmc-diagnosis-py">
+<h2><code class="docutils literal notranslate"><span class="pre">vc_hmc_diagnosis.py</span></code><a class="headerlink" href="#vc-hmc-diagnosis-py" title="Permalink to this headline">¶</a></h2>
+<p>This CLI calculates the potential reduction factors for all sequences given multiple <strong>hmc</strong> samples output by <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code>.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">vc_hmc_diagnosis</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">-</span><span class="n">samples</span> <span class="n">SAMPLEPATHS</span> <span class="p">[</span><span class="n">SAMPLEPATHS</span> <span class="o">...</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">name</span> <span class="n">NAME</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>-samples</kbd></dt>
+<dd><p>tuple of paths to HMC samples</p>
+</dd>
+<dt><kbd>-name</kbd></dt>
+<dd><p>project name</p>
+</dd>
+</dl>
+</div>
+</div></blockquote>
+<p>This command outputs <code class="docutils literal notranslate"><span class="pre">R_hat.txt</span></code> which contains the potential scale reduction factors for all sequences.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Juannan Zhou and David M. McCandlish
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

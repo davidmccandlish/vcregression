@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tutorial &mdash; vcregression 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://vcregression.readthedocs.iotutorial.html"/>
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> vcregression
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="howtouse.html">How to use vc_regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#notes-on-the-upper-limit-of-the-size-sequence-space">Notes on the upper limit of the size sequence space</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataprep.html">Data preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataprep.html#example">example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="smn1.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#data-preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#estimation-of-variance-components">Estimation of variance components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#map-estimate">MAP estimate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#estimate-posterior-variance">Estimate posterior variance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#posterior-sampling-using-hamiltonian-monte-carlo">Posterior sampling using Hamiltonian Monte Carlo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#the-hmc-algorithm">The HMC algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#how-to-use-vc-hmc-py">How to use <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#running-the-hmc-sampling">Running the HMC sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#convergence-diagnostics">Convergence diagnostics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-prep-py"><code class="docutils literal notranslate"><span class="pre">vc_prep.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#output-files">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-map-estimate-py"><code class="docutils literal notranslate"><span class="pre">vc_map_estimate.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#output-file">Output file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-pos-var-py"><code class="docutils literal notranslate"><span class="pre">vc_pos_var.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#input-sequences">input sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#id1">Output file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-hmc-py"><code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#id2">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-hmc-diagnosis-py"><code class="docutils literal notranslate"><span class="pre">vc_hmc_diagnosis.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">vcregression</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This section walks the reader through two applications using the Smn1 and the GB1 datasets. The basic functionalities of the software is straightforward. So we will mainly focus on the posterior sampling.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="smn1.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#data-preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#estimation-of-variance-components">Estimation of variance components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#map-estimate">MAP estimate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#estimate-posterior-variance">Estimate posterior variance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smn1.html#posterior-sampling-using-hamiltonian-monte-carlo">Posterior sampling using Hamiltonian Monte Carlo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#the-hmc-algorithm">The HMC algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#how-to-use-vc-hmc-py">How to use <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#running-the-hmc-sampling">Running the HMC sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smn1.html#convergence-diagnostics">Convergence diagnostics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Juannan Zhou and David M. McCandlish
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

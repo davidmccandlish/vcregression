@@ -1,4 +1,4 @@
-# variance_component_regression
+# vcregression: variance component regresion for sequence-function relationships
 vcregression is a command line interface for statistical inference of sequence-function relationships using *Gaussian process(GP) regression*.
 
 ## Install all dependencies:

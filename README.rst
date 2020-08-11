@@ -3,10 +3,10 @@
 ``vcregression``: variance component regresion for sequence-function relationships
 ==============================================================================
 .. image:: https://readthedocs.org/projects/vcregression/badge/?version=latest
-:target: https://vcregression.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
+    :target: https://vcregression.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
-``vcregression`` is a command line interface for statistical inference of sequence-function relationships using *Gaussian process(GP) regression*. See the `vcregression documentation <vcregression.readthedocs.io>`_ for information about using ``vcregression`` and details about the recommended installation process.
+``vcregression`` is a command line interface for statistical inference of sequence-function relationships using *Gaussian process(GP) regression*. See the `vcregression documentation <https://vcregression.readthedocs.io/en/latest/>`_ for information about using ``vcregression`` and details about the recommended installation process.
 
 Install dependencies::
 

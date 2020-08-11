@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tutorial &mdash; vcregression 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://vcregression.readthedocs.iosmn1.html"/>
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Implementation" href="implementation.html" />
+    <link rel="prev" title="Data preparation" href="dataprep.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> vcregression
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howtouse.html">How to use vc_regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtouse.html#notes-on-the-upper-limit-of-the-size-sequence-space">Notes on the upper limit of the size sequence space</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataprep.html">Data preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataprep.html#example">example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data-preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#estimation-of-variance-components">Estimation of variance components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#map-estimate">MAP estimate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#estimate-posterior-variance">Estimate posterior variance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#posterior-sampling-using-hamiltonian-monte-carlo">Posterior sampling using Hamiltonian Monte Carlo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-hmc-algorithm">The HMC algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-use-vc-hmc-py">How to use <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-hmc-sampling">Running the HMC sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convergence-diagnostics">Convergence diagnostics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-prep-py"><code class="docutils literal notranslate"><span class="pre">vc_prep.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#output-files">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-map-estimate-py"><code class="docutils literal notranslate"><span class="pre">vc_map_estimate.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#output-file">Output file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-pos-var-py"><code class="docutils literal notranslate"><span class="pre">vc_pos_var.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#input-sequences">input sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#id1">Output file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-hmc-py"><code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementation.html#id2">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="implementation.html#vc-hmc-diagnosis-py"><code class="docutils literal notranslate"><span class="pre">vc_hmc_diagnosis.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">vcregression</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/smn1.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tutorial">
+<span id="smn1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>Here we will learn how to use all functionalities of <code class="docutils literal notranslate"><span class="pre">vcregression</span></code> by walking through an example dataset of the <em>5’ splice sites</em> of the gene Smn1. The data is generated by Wong et al. (2018) <a class="footnote-reference brackets" href="#wong2018" id="id1">1</a>. The whole dataset contains the splicing efficiencies (in unit of percetage spliced in, <em>PSI</em>) of 30,732 <em>5’ splice sites</em> out of all 32,678 possible splice sites. Here we use a subset of the full dataset consisting of 24,585 sequences (80% of the full data).</p>
+<div class="section" id="data-preparation">
+<h2>Data Preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">¶</a></h2>
+<p>The input data should be a <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file containing three columns corresponding to sequences, phenotypes, and the estimations of variance of measurement noise. <code class="docutils literal notranslate"><span class="pre">vcregression</span></code> does not support other sequence format. The following shows the top 10 rows of the input data <code class="docutils literal notranslate"><span class="pre">data/Smn1/smn1data.csv</span></code>:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>UACGUUGGG</p></td>
+<td><p>0.407</p></td>
+<td><p>0.076</p></td>
+</tr>
+<tr class="row-even"><td><p>GGCGCUCAC</p></td>
+<td><p>1.62</p></td>
+<td><p>0.407</p></td>
+</tr>
+<tr class="row-odd"><td><p>AUGGUAUCG</p></td>
+<td><p>9.752</p></td>
+<td><p>1.276</p></td>
+</tr>
+<tr class="row-even"><td><p>ACAGCUGGC</p></td>
+<td><p>0.151</p></td>
+<td><p>0.028</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACAGUUGAU</p></td>
+<td><p>0.193</p></td>
+<td><p>0.036</p></td>
+</tr>
+<tr class="row-even"><td><p>GACGUCCUC</p></td>
+<td><p>20.191</p></td>
+<td><p>3.182</p></td>
+</tr>
+<tr class="row-odd"><td><p>AGCGUCUUC</p></td>
+<td><p>0.124</p></td>
+<td><p>0.023</p></td>
+</tr>
+<tr class="row-even"><td><p>AAGGUUGUG</p></td>
+<td><p>13.497</p></td>
+<td><p>1.912</p></td>
+</tr>
+<tr class="row-odd"><td><p>CUAGCGUUA</p></td>
+<td><p>0.208</p></td>
+<td><p>0.046</p></td>
+</tr>
+<tr class="row-even"><td><p>AAGGCAGGA</p></td>
+<td><p>0.357</p></td>
+<td><p>0.105</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="estimation-of-variance-components">
+<h2>Estimation of variance components<a class="headerlink" href="#estimation-of-variance-components" title="Permalink to this headline">¶</a></h2>
+<p>All calculations of <code class="docutils literal notranslate"><span class="pre">vcregression</span></code> relies on a prior prescribing the contribution of different orders of epistatic interaction to the total variance in the landscape. We denote the variance component of order <em>k</em> as <span class="math notranslate nohighlight">\(\Omega_k\)</span>. For computational convenience, we estimate an equivalent quantity <span class="math notranslate nohighlight">\(\lambda_k\)</span>. The following equation allows us to transform between the two quantities:</p>
+<div class="math notranslate nohighlight">
+\[\Omega_k = \frac{\binom{l}{k}(\alpha-1)^k \lambda_k}{\sum_{i=1}^l\binom{l}{i}(\alpha - 1)^i \lambda_i}\]</div>
+<p>The software provides a procedure to first estimate the <em>lambdas</em> from partially observed fitness landscape. Unless the user prefers to specify her own prior, the first step of using the software should be to estimate the <em>lambdas</em> from the data.
+To do this, we first execute the following command line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">vc_prep</span><span class="o">.</span><span class="n">py</span> <span class="mi">4</span> <span class="mi">8</span> <span class="o">-</span><span class="n">name</span> <span class="n">smn1</span>  <span class="o">-</span><span class="n">data</span> <span class="n">data</span><span class="o">/</span><span class="n">Smn1</span><span class="o">/</span><span class="n">smn1data</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">cv</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>The numbers <code class="docutils literal notranslate"><span class="pre">4</span></code> and <code class="docutils literal notranslate"><span class="pre">8</span></code> specify the <em>alphabet size</em> <code class="docutils literal notranslate"><span class="pre">a</span></code> and <em>sequence length</em> <code class="docutils literal notranslate"><span class="pre">l</span></code>. The positional argument <code class="docutils literal notranslate"><span class="pre">-data</span></code> specifies the path to the input data file.</p>
+<p><code class="docutils literal notranslate"><span class="pre">vc_prep.py</span></code> provides two options for estimating the lambdas. The first option uses the least squares method to find the <em>lambdas</em> that can best reconstruct the autocorrelation function observed in the data. The second option adds an regularization term to the cost function used in the least squares method, with the regularization parameter chosen using 10-fold crossvalidation. The second option is the default setting. To use the least squares method, add the argument <code class="docutils literal notranslate"><span class="pre">-cv</span> <span class="pre">False</span></code> to the command line.</p>
+<p>Note that the least squares method can output negative values for the <em>lambdas</em> when we only have partial observation of the landscape. This is not acceptable, as the <em>lambdas</em> represent the variance of epistatic coefficients of different orders. Another possible ill-conditioned scenario is the lack of all distance classes between 0 and l, which results in an incomplete empirical autocorrelation function. In both cases, the program automatically switches to the regularized estimator.</p>
+<p>The default output directory is <code class="docutils literal notranslate"><span class="pre">my_project/</span></code>, but the user can specify the directory by using the argument <code class="docutils literal notranslate"><span class="pre">-name</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">vc_prep.py</span></code> outputs two <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files <code class="docutils literal notranslate"><span class="pre">lambdas.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">variance_component.txt</span></code>. The two files generated by the command line above are shown below:</p>
+<p><code class="docutils literal notranslate"><span class="pre">lambdas.txt</span></code></p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>order_0</p></td>
+<td><p>3356027.47</p></td>
+</tr>
+<tr class="row-even"><td><p>order_1</p></td>
+<td><p>153814.18</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_2</p></td>
+<td><p>44970.01</p></td>
+</tr>
+<tr class="row-even"><td><p>order_3</p></td>
+<td><p>3453.46</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_4</p></td>
+<td><p>363.17</p></td>
+</tr>
+<tr class="row-even"><td><p>order_5</p></td>
+<td><p>318.42</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_6</p></td>
+<td><p>68.85</p></td>
+</tr>
+<tr class="row-even"><td><p>order_7</p></td>
+<td><p>43.17</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_8</p></td>
+<td><p>29.17</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">variance_component.txt</span></code></p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>order_1</p></td>
+<td><p>0.127</p></td>
+</tr>
+<tr class="row-even"><td><p>order_2</p></td>
+<td><p>0.390</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_3</p></td>
+<td><p>0.180</p></td>
+</tr>
+<tr class="row-even"><td><p>order_4</p></td>
+<td><p>0.071</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_5</p></td>
+<td><p>0.149</p></td>
+</tr>
+<tr class="row-even"><td><p>order_6</p></td>
+<td><p>0.048</p></td>
+</tr>
+<tr class="row-odd"><td><p>order_7</p></td>
+<td><p>0.026</p></td>
+</tr>
+<tr class="row-even"><td><p>order_8</p></td>
+<td><p>0.006</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="map-estimate">
+<h2>MAP estimate<a class="headerlink" href="#map-estimate" title="Permalink to this headline">¶</a></h2>
+<p>Now we can use the estimated lambda to calculate the maximum a posterior(<strong>MAP</strong>) estimate. To do this, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">vc_map_estimate</span><span class="o">.</span><span class="n">py</span> <span class="mi">4</span> <span class="mi">8</span> <span class="o">-</span><span class="n">name</span> <span class="n">smn1</span> <span class="o">-</span><span class="n">data</span> <span class="n">data</span><span class="o">/</span><span class="n">Smn1</span><span class="o">/</span><span class="n">smn1data</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">smn1</span><span class="o">/</span><span class="n">lambdas</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-lambdas</span></code> argument needs to be followed by the path to the <em>lambdas</em> estimated in the previous procedure.</p>
+<p>Executing this command output the MAP estimate <code class="docutils literal notranslate"><span class="pre">map.csv</span></code>. Here is the top 10 rows of the file:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>sequence</p></td>
+<td><p>phenotype</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAAAA</p></td>
+<td><p>2.038</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAAAC</p></td>
+<td><p>1.887</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAAAG</p></td>
+<td><p>3.017</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAAAU</p></td>
+<td><p>3.021</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAACA</p></td>
+<td><p>4.438</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAACC</p></td>
+<td><p>2.237</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAACG</p></td>
+<td><p>4.232</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAACU</p></td>
+<td><p>2.520</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAAAAGA</p></td>
+<td><p>34.346</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAAAAGC</p></td>
+<td><p>34.681</p></td>
+</tr>
+</tbody>
+</table>
+<p>The entries are arranged in lexicographical order and the file contains all possible genotypes with the specified <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">l</span></code> values.</p>
+</div>
+<div class="section" id="estimate-posterior-variance">
+<h2>Estimate posterior variance<a class="headerlink" href="#estimate-posterior-variance" title="Permalink to this headline">¶</a></h2>
+<p>To acquire the posterior variance as a measure of uncertainty of the <strong>MAP</strong> estimate, use the <code class="docutils literal notranslate"><span class="pre">vc_variance.py</span></code> module. This command analytically calculates the posterior variance sequentially for a list of sequences.</p>
+<p>Since the calculation of posterior variance for a single sequence takes the roughly the same amount of time as the MAP estimate, we ask the user to provide a list of sequences for which the posterior variance will be calculated. Below is the list of sequences we use for this tutorial in the file <code class="docutils literal notranslate"><span class="pre">data/Smn1/smn1seqpos.csv</span></code>:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>AAAUGAUA</p></td>
+</tr>
+<tr class="row-even"><td><p>CAUUCGUC</p></td>
+</tr>
+<tr class="row-odd"><td><p>UAGCGUCU</p></td>
+</tr>
+<tr class="row-even"><td><p>GCGCGAUC</p></td>
+</tr>
+<tr class="row-odd"><td><p>AACCACGU</p></td>
+</tr>
+<tr class="row-even"><td><p>CGACUCGA</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCCCGUUU</p></td>
+</tr>
+<tr class="row-even"><td><p>CAACGCAA</p></td>
+</tr>
+<tr class="row-odd"><td><p>CGCUAGGA</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAUCGAG</p></td>
+</tr>
+</tbody>
+</table>
+<p>To estimate the posterior variances for the list of sequence above, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">vc_pos_var</span><span class="o">.</span><span class="n">py</span> <span class="mi">4</span> <span class="mi">8</span> <span class="o">-</span><span class="n">name</span> <span class="n">smn1</span> <span class="o">-</span><span class="n">data</span> <span class="n">data</span><span class="o">/</span><span class="n">Smn1</span><span class="o">/</span><span class="n">smn1data</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">smn1</span><span class="o">/</span><span class="n">lambdas</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">seqsvar</span> <span class="n">data</span><span class="o">/</span><span class="n">Smn1</span><span class="o">/</span><span class="n">smn1seqpos</span><span class="o">.</span><span class="n">csv</span>
+</pre></div>
+</div>
+<p>This will ouput a <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file named <code class="docutils literal notranslate"><span class="pre">varpos.txt</span></code> containing the estimated variances.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 63%" />
+<col style="width: 38%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>sequence</p></td>
+<td><p>variance</p></td>
+</tr>
+<tr class="row-even"><td><p>AAAUGAUA</p></td>
+<td><p>0.082</p></td>
+</tr>
+<tr class="row-odd"><td><p>CAUUCGUC</p></td>
+<td><p>0.576</p></td>
+</tr>
+<tr class="row-even"><td><p>UAGCGUCU</p></td>
+<td><p>0.023</p></td>
+</tr>
+<tr class="row-odd"><td><p>GCGCGAUC</p></td>
+<td><p>108.691</p></td>
+</tr>
+<tr class="row-even"><td><p>AACCACGU</p></td>
+<td><p>1.879</p></td>
+</tr>
+<tr class="row-odd"><td><p>CGACUCGA</p></td>
+<td><p>9.012</p></td>
+</tr>
+<tr class="row-even"><td><p>UCCCGUUU</p></td>
+<td><p>0.370</p></td>
+</tr>
+<tr class="row-odd"><td><p>CAACGCAA</p></td>
+<td><p>0.290</p></td>
+</tr>
+<tr class="row-even"><td><p>CGCUAGGA</p></td>
+<td><p>0.087</p></td>
+</tr>
+<tr class="row-odd"><td><p>AAAUCGAG</p></td>
+<td><p>88.807</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="posterior-sampling-using-hamiltonian-monte-carlo">
+<h2>Posterior sampling using Hamiltonian Monte Carlo<a class="headerlink" href="#posterior-sampling-using-hamiltonian-monte-carlo" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="the-hmc-algorithm">
+<h3>The HMC algorithm<a class="headerlink" href="#the-hmc-algorithm" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">vcregression</span></code> provide an efficient sampling method from the posterior distribution using <em>Hamiltonian Monte Carlo</em> (<strong>HMC</strong>) with the module <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code>. Sampling from the posterior allows us to calculate the posterior variance simultaneously for all sequences, in contrast to the using the module <code class="docutils literal notranslate"><span class="pre">vc_variance.py</span></code> which calculates the variance for one sequence at a time. Additionally, we can use the posterior samples to calculate important statistics for which we do not have close-form formula.</p>
+<p>For introductions to the HMC algorithm, see Betacourt(2018) <a class="footnote-reference brackets" href="#betacourt2018" id="id2">2</a> and Neal(2012) <a class="footnote-reference brackets" href="#neal2012" id="id3">3</a>.</p>
+<p>HMC is a gradient-based algorithm that is able to take advantage of the local geometry of the typical set, making it less prone to diffusive behavior like MCMC and more suitable for sampling from high dimensional probability distributions.</p>
+<p>Let <span class="math notranslate nohighlight">\(q\)</span> denote a sample from the posterior distribution. The HMC first introduces an auxiliary momentum vector <span class="math notranslate nohighlight">\(p\)</span> to complement each dimension of our target parameter space. The Hamiltonian <span class="math notranslate nohighlight">\(\mathcal{H}\)</span> is then defined as the sum of the potential energy and the kinetic energy.
+In our case, <span class="math notranslate nohighlight">\(\mathcal{H}\)</span> is defined as</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{H}(q,p) = \frac{1}{2} (q^T \mathbf{\tilde{K}} q + \|p\|),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{\tilde{K}}\)</span> is the precision matrix of the posterior distribution. The Hamiltonian defines the canonical distribution on the augmented space <span class="math notranslate nohighlight">\((q,p)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[P(q,p) = \frac{1}{Z}\exp(-\mathcal{H}(q,p))\]</div>
+<p>Our goal is the efficiently sample from this distribution, which results in efficient sampling of our posterior distribution of <span class="math notranslate nohighlight">\(q\)</span> when <span class="math notranslate nohighlight">\((q,p)\)</span> is projected to the original space <span class="math notranslate nohighlight">\(q\)</span>.</p>
+<p>The HMC algorithm  proceeds using a Markov chain that alternates between random updates <span class="math notranslate nohighlight">\(p \rightarrow p'\)</span> to the momentum variable and deterministic integration of Hamiltonian dynamics using the Hamiltonian equations</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\frac{dp}{dt} &amp;= -\frac{\partial \mathcal{H}}{\partial q},\\\frac{dq}{dt} &amp;= \frac{\partial \mathcal{H}}{\partial p}.\end{aligned}\end{align} \]</div>
+<p>The Hamiltonian dynamics leaves the <span class="math notranslate nohighlight">\(\mathcal{H}\)</span> invariant, which allows us to explore a level set of the total energy, while the random updates to the momentum vector <span class="math notranslate nohighlight">\(p\)</span> allows us to quickly traverse different level sets. These two steps together leads to more efficient sampling from the canonical distribution. In practice, the integration step is discretized and performed using a symplectic integrator know as the <em>leapfrog</em> algorithm.</p>
+<p>The discretized integration could introduce numerical errors, causing the total energy at the end of the <em>leapfrog</em> integration to deviate from the starting energy. As a result, the HMC algorithm employs a Metropolis update step at the end of the <em>leapfrog</em> iterations by calculating the energy difference between the start and the end of the integration. Therefore, much of the effort in using HMC is dedicated to tuning the <em>leapfrog</em> parameters so that the system explores the posterior distribution efficiently.</p>
+</div>
+<div class="section" id="how-to-use-vc-hmc-py">
+<h3>How to use <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code><a class="headerlink" href="#how-to-use-vc-hmc-py" title="Permalink to this headline">¶</a></h3>
+<p>Our software uses the <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code> moduel to perform the HMC sampling. The most import arguments for <code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code> is <code class="docutils literal notranslate"><span class="pre">-step_size</span></code> and <code class="docutils literal notranslate"><span class="pre">-n_steps</span></code> which dictate the step size and the number of steps taken by the <em>leapfrog</em> integrator. If these two parameters are too small, the sampling will proceed very slowly. On the other hand, values that are too high can cause large numerical error and lead to very low acceptance rate in the Metropolis step, also leading to slow exploration of the posterior distribution.</p>
+<p><code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code> provides an adaptive feature to tune the step size parameter using the <em>No-U-Turn Sampler</em> <a class="footnote-reference brackets" href="#hoffman2011" id="id4">4</a>. In short, the initial step size provided by the user in <code class="docutils literal notranslate"><span class="pre">-step_size</span></code> will be optimized during an initial tuning phase. The number of tuning iterations is provided with the argument <code class="docutils literal notranslate"><span class="pre">-n_tunes</span></code>.
+In practice, the user can provide a small step size, for example <code class="docutils literal notranslate"><span class="pre">-step_size</span> <span class="pre">1e-6</span></code>. This value will be adjusted so that the average acceptance rate is close to the ideal value of <span class="math notranslate nohighlight">\(0.65\)</span> <a class="footnote-reference brackets" href="#hoffman2011" id="id5">4</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">n_steps</span></code> parameter specifies the number of <em>leapfrog</em> steps to perform for each iteration. We find <code class="docutils literal notranslate"><span class="pre">n_steps</span> <span class="pre">100</span></code> often works well in practice. However, if the user discover high autocorrelation between samples, this value should be increased accordingly.</p>
+<p>Additional parameters include <code class="docutils literal notranslate"><span class="pre">-n_samples</span></code>, which specifies the total number of HMC samples to draw. Since samples acquired during the tuning phase are discarded, the total number of iterations of the HMC is equal to <code class="docutils literal notranslate"><span class="pre">-n_tunes</span></code> + <code class="docutils literal notranslate"><span class="pre">-n_samples</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">-initial_position</span></code> correspond to the starting position of the Markov chain. The possible choices are <code class="docutils literal notranslate"><span class="pre">mode</span></code>, <code class="docutils literal notranslate"><span class="pre">random</span></code>, and <code class="docutils literal notranslate"><span class="pre">custom</span></code>.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">mode</span></code></dt><dd><p>The starting position equal to the MAP estimate.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">random</span></code></dt><dd><p>The starting position is sampled from a standard normal distribution.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">custom</span></code></dt><dd><p>The starting position is specified by the user. If this option is selected, the user needs to provide the path to the <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file containing coordinates of the initial position. Note that this file should be in the same format as output <code class="docutils literal notranslate"><span class="pre">map.txt</span></code> file.</p>
+</dd>
+</dl>
+<p>If the argument <code class="docutils literal notranslate"><span class="pre">-intermediate_output</span></code> is set to be <code class="docutils literal notranslate"><span class="pre">True</span></code>, HMC samples and sample variance based on all previous samples will be saved to the output folder every <strong>100</strong> samples.</p>
+</div>
+<div class="section" id="running-the-hmc-sampling">
+<h3>Running the HMC sampling<a class="headerlink" href="#running-the-hmc-sampling" title="Permalink to this headline">¶</a></h3>
+<p>Execute the following command to perform HMC sampling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">vc_hmc</span><span class="o">.</span><span class="n">py</span> <span class="mi">4</span> <span class="mi">8</span> <span class="o">-</span><span class="n">name</span> <span class="n">smn1</span> <span class="o">-</span><span class="n">data</span> <span class="n">data</span><span class="o">/</span><span class="n">Smn1</span><span class="o">/</span><span class="n">smn1data</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">smn1</span><span class="o">/</span><span class="n">lambdas</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">MAP</span> <span class="n">smn1</span><span class="o">/</span><span class="nb">map</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">step_size</span> <span class="mf">1e-05</span> <span class="o">-</span><span class="n">n_steps</span> <span class="mi">100</span> <span class="o">-</span><span class="n">n_samples</span> <span class="mi">500</span> <span class="o">-</span><span class="n">n_tunes</span> <span class="mi">100</span> <span class="o">-</span><span class="n">starting_position</span> <span class="s1">&#39;random&#39;</span> <span class="o">-</span><span class="n">intermediate_output</span> <span class="kc">True</span> <span class="o">-</span><span class="n">sample_name</span> <span class="n">hmc1</span>
+</pre></div>
+</div>
+<p>Here we have chosen an initial step size of <code class="docutils literal notranslate"><span class="pre">1e-05</span></code>, with <code class="docutils literal notranslate"><span class="pre">100</span></code> <em>leapfrog</em> steps per iteration, <code class="docutils literal notranslate"><span class="pre">100</span></code> tuning steps, and <code class="docutils literal notranslate"><span class="pre">500</span></code> HMC samples. Additionally, we specify the sample name using the <code class="docutils literal notranslate"><span class="pre">-sample_name</span></code> argument, so that the prefix <code class="docutils literal notranslate"><span class="pre">hmc1_</span></code> we choose will be added to all outputs of this command.</p>
+<p>All HMC samples are saved in <code class="docutils literal notranslate"><span class="pre">hmc1_hmc_samples.txt</span></code>, in the output folder specified by <code class="docutils literal notranslate"><span class="pre">-name</span></code>.  Another output file <code class="docutils literal notranslate"><span class="pre">hmc1_hmc_variance.txt</span></code> contains the variance for all sequences calculated using the HMC samples.</p>
+<p>Since we have set <code class="docutils literal notranslate"><span class="pre">-intermediate_output</span> <span class="pre">True</span></code>, the output folder also contains files <code class="docutils literal notranslate"><span class="pre">hmc1_hmc_batch_i_samples.txt</span></code>, and <code class="docutils literal notranslate"><span class="pre">hmc1_hmc_batch_i_variance.txt</span></code> for <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">1</span></code> to <code class="docutils literal notranslate"><span class="pre">5</span></code>. The intermediate outputs are especially useful when the user is running a long chain, and would like to examine the convergence criteria while the chain is still running.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">hmc1_hmc_batch_n_samples.txt</span></code> file contains 100 samples numbered from <code class="docutils literal notranslate"><span class="pre">(n-1)*100</span></code> to <code class="docutils literal notranslate"><span class="pre">n*100</span></code>. In contrast, <code class="docutils literal notranslate"><span class="pre">hmc1_hmc_batch_n_variance.txt</span></code> file contains variance estimated using all samples up to <code class="docutils literal notranslate"><span class="pre">n*100</span></code>.</p>
+</div>
+<div class="section" id="convergence-diagnostics">
+<h3>Convergence diagnostics<a class="headerlink" href="#convergence-diagnostics" title="Permalink to this headline">¶</a></h3>
+<p>When running Markov Chain samplers, it is important to examine whether the chain has converged. Here we introduce two diagnostics for the convergence of the HMC chain.</p>
+<p>First,  we can compare the variance estimated using HMC in <code class="docutils literal notranslate"><span class="pre">hmc1_hmc_variance.txt</span></code> and the analytical results obtained using <code class="docutils literal notranslate"><span class="pre">vc_pos_var.py</span></code>.
+Use the following python code to plot a scatter plot of the two sets of estimates:</p>
+<div class="highlight-py notranslate" id="plottingscatter"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">varpos</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;smn1/varpos.txt&quot;</span><span class="p">)</span>
+
+<span class="n">varsample</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;smn1/hmc1_hmc_variance.txt&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">varsamplesub</span><span class="o">=</span><span class="p">[</span><span class="n">varsample</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">varsample</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">seq</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">varpos</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">]]</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">varsamplesub</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">varpos</span><span class="p">[</span><span class="s1">&#39;variance&#39;</span><span class="p">])</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;std HMC&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;std analytical&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/scatter.jpg"><img alt="scatter" class="align-center" src="_images/scatter.jpg" style="width: 500px; height: 500px;" /></a>
+<p>The scatter plot shows fairly good agreement between standard deviations using the two methods. If the user needs higher quality variance estimates, <code class="docutils literal notranslate"><span class="pre">-n_samples</span></code> can be adjusted accordingly.</p>
+<p>Second, we provide a more quantitative measure, namely the <em>Potential Scale Reduction Factor</em> <a class="footnote-reference brackets" href="#brooks1998" id="id6">5</a> (<span class="math notranslate nohighlight">\(\hat{R}\)</span>). This quantity calculates the ratio of the variance between HMC chains to the variance within chains as a measure of how well the multiple chains have mixed. A <span class="math notranslate nohighlight">\(\hat{R} \approx   1\)</span> corresponding to good mixing between chains. To perform this diagnostic, we need to run another HMC chain with the name <code class="docutils literal notranslate"><span class="pre">hmc2</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">vc_hmc</span><span class="o">.</span><span class="n">py</span> <span class="mi">4</span> <span class="mi">8</span> <span class="o">-</span><span class="n">name</span> <span class="n">smn1</span> <span class="o">-</span><span class="n">data</span> <span class="n">data</span><span class="o">/</span><span class="n">Smn1</span><span class="o">/</span><span class="n">smn1data</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">smn1</span><span class="o">/</span><span class="n">lambdas</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">MAP</span> <span class="n">smn1</span><span class="o">/</span><span class="nb">map</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">step_size</span> <span class="mf">1e-05</span> <span class="o">-</span><span class="n">n_steps</span> <span class="mi">100</span> <span class="o">-</span><span class="n">n_samples</span> <span class="mi">500</span> <span class="o">-</span><span class="n">n_tunes</span> <span class="mi">100</span> <span class="o">-</span><span class="n">starting_position</span> <span class="s1">&#39;random&#39;</span> <span class="o">-</span><span class="n">intermediate_output</span> <span class="kc">True</span> <span class="o">-</span><span class="n">sample_name</span> <span class="n">hmc2</span>
+</pre></div>
+</div>
+<p>Now we can use the <code class="docutils literal notranslate"><span class="pre">vc_hmc_diagnosis.py</span></code> module to calculate <span class="math notranslate nohighlight">\(\hat{R}\)</span> for all coordinates(sequences):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">vc_hmc_diagnosis</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">samples</span> <span class="n">smn1</span><span class="o">/</span><span class="n">hmc1_hmc_samples</span><span class="o">.</span><span class="n">txt</span><span class="p">,</span><span class="n">smn1</span><span class="o">/</span><span class="n">hmc2_hmc_samples</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">name</span> <span class="n">smn1</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-samples</span></code> argument needs to be followed by the path to a set of n samples separated by commas, with <strong>no space</strong> in between.</p>
+<p>This command calculate the <span class="math notranslate nohighlight">\(\hat{R}\)</span> for all sequences saves it to the file <code class="docutils literal notranslate"><span class="pre">R_hat.txt</span></code>. It also reports the two sequences with lowest and highest <span class="math notranslate nohighlight">\(\hat{R}\)</span> on the screen. Also output is the trajectories for the least well-mixed sequence (sequence with the highest <span class="math notranslate nohighlight">\(\hat{R}\)</span>):</p>
+<a class="reference internal image-reference" href="_images/R_hat.png"><img alt="scatter" class="align-center" src="_images/R_hat.png" style="width: 500px;" /></a>
+<p>Visual examination of the individual trajectories shows relatively low degree of autocorrelation. However, the two chains are not fully ‘mixed’. Therefore, doubling <code class="docutils literal notranslate"><span class="pre">-nsamples</span></code> to <code class="docutils literal notranslate"><span class="pre">1000</span></code> can be the next step.</p>
+<dl class="footnote brackets">
+<dt class="label" id="wong2018"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Wong et al. 2018. <em>Quantitative Activity Profile and Context Dependence of All Human 50 Splice Sites.</em></p>
+</dd>
+<dt class="label" id="betacourt2018"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Betacourt 2018.  &lt;<a class="reference external" href="https://arxiv.org/abs/1701.02434">https://arxiv.org/abs/1701.02434</a>&gt;</p>
+</dd>
+<dt class="label" id="neal2012"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>Neal 2012. &lt;<a class="reference external" href="https://arxiv.org/pdf/1206.1901.pdf">https://arxiv.org/pdf/1206.1901.pdf</a>&gt;</p>
+</dd>
+<dt class="label" id="hoffman2011"><span class="brackets">4</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id5">2</a>)</span></dt>
+<dd><p>Hoffman&amp;Gelman 2011 &lt;<a class="reference external" href="http://arxiv.org/abs/1111.4246">http://arxiv.org/abs/1111.4246</a>&gt;</p>
+</dd>
+<dt class="label" id="brooks1998"><span class="brackets"><a class="fn-backref" href="#id6">5</a></span></dt>
+<dd><p>Brooks&amp;Gelman 1998 &lt;<a class="reference external" href="http://pointer.esalq.usp.br/departamentos/lce/arquivos/aulas/2010/LCE5813/Brooks.pdf">http://pointer.esalq.usp.br/departamentos/lce/arquivos/aulas/2010/LCE5813/Brooks.pdf</a>&gt;</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Juannan Zhou and David M. McCandlish
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

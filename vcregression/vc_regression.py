@@ -24,10 +24,13 @@ from tqdm import tqdm
 
 
 def inv(v):
+    """return a vector a reciprocals for v"""
+
     return([1 / v[i] for i in range(len(v))])
 
 
 def gd(x, y):
+    """calculate reciprocal of variable, if variable=0, return 0"""
     if y == 0:
         return 0
     else:
@@ -37,25 +40,30 @@ def gd(x, y):
 
 
 def seq2pos(seq):
+    """return lexicographical position of a numerical sequence"""
     nums = []
     for i in range(len(seq)):
-        nums.append(seq[i] * (alpha**(len(seq) - i - 1)))
+        nums.append(seq[i] * (a**(len(seq) - i - 1)))
     return(sum(nums))
 
 
 def sequence_to_position(seq):
+    """return lexicographical position of a numerical sequence using the
+     seq_to_pos_converter"""
 
     return sp.sum(seq * seq_to_pos_converter)
 
 
 def w(k, d):
+    """return value of the Krwatchouk polynomial for k, d"""
     s = 0
     for q in range(l + 1):
-        s += (-1)**q * (alpha - 1)**(k - q) * comb(d, q) * comb(l - d, k - q)
-    return 1 / alpha**l * s
+        s += (-1)**q * (a - 1)**(k - q) * comb(d, q) * comb(l - d, k - q)
+    return 1 / a**l * s
 
 
 def W_kd_mat():
+    """return full matrix l+1 by l+1 Krawtchouk matrix"""
 
     # Construct W_kd
     global W_kd
@@ -67,9 +75,10 @@ def W_kd_mat():
 
 
 def construct_L_sparse():
+    """construct graph Laplacian for using the global a and l"""
 
     # Generate bases and sequences
-    bases = sp.array(range(alpha))
+    bases = sp.array(range(a))
     seqs = list(itertools.product(bases, repeat=l))
 
     # Find indices of L at which L = -1
@@ -77,7 +86,7 @@ def construct_L_sparse():
     for i in range(G):
         row_ids.append(i)
         col_ids.append(i)
-        values.append(l * (alpha - 1))
+        values.append(l * (a - 1))
         for site in range(l):
             for base in bases:
                 seq_i = sp.array(seqs[i])
@@ -96,6 +105,8 @@ def construct_L_sparse():
 
 
 def prepare_L_sparse(from_dir='sparse_matrix/L/'):
+    """If L given the a and l is present in the sparse_matrix folder
+    ,load the matrix. Otherwise, the matrix is constructed"""
 
     # Set global parameters for later use
     global L_sparse
@@ -105,7 +116,7 @@ def prepare_L_sparse(from_dir='sparse_matrix/L/'):
 
     # If the matrix desired has been made already, load it. Otherwise,
     # construct and save it
-    file_name = 'L_sparse_alpha' + str(alpha) + '_' + 'l' + str(l) + '.npz'
+    file_name = 'L_sparse_a' + str(a) + '_' + 'l' + str(l) + '.npz'
 
     if file_name in spm_list:
 
@@ -124,8 +135,10 @@ def prepare_L_sparse(from_dir='sparse_matrix/L/'):
         save_npz(from_dir + file_name, L_sparse)
 
 
-# Entries of powers of L. Column: powers of L. Row: Hamming distance
 def construct_MAT():
+    """Construct entries of powers of L. 
+    Column: powers of L. 
+    Row: Hamming distance"""
 
     # Set global parameters for later use
     global MAT, MAT_inv
@@ -135,21 +148,21 @@ def construct_MAT():
     for i in range(l + 1):
         for j in range(l + 1):
             if i == j:
-                C[i, j] = i * (alpha - 2)
+                C[i, j] = i * (a - 2)
             if i == j + 1:
                 C[i, j] = i
             if i == j - 1:
-                C[i, j] = (l - j + 1) * (alpha - 1)
+                C[i, j] = (l - j + 1) * (a - 1)
 
     # Construct D
-    D = sp.array(np.diag(l * (alpha - 1) * np.ones(l + 1), 0))
+    D = sp.array(np.diag(l * (a - 1) * np.ones(l + 1), 0))
 
     # Construct B
     B = D - C
 
     # Construct u
     u = np.zeros(l + 1)
-    u[0], u[1] = l * (alpha - 1), -1
+    u[0], u[1] = l * (a - 1), -1
 
     # Construct MAT column by column
     MAT = np.zeros([l + 1, l + 1])
@@ -164,6 +177,8 @@ def construct_MAT():
 
 
 def solve_c_k(d):
+    """return the coefficients of the adjacency matrix at Hamming
+    distance d as a polynomial of L"""
 
     # Set global parameters for later use
     global c_k
@@ -176,6 +191,8 @@ def solve_c_k(d):
 # data dependent functions
 
 def construct_A_sparse():
+    """construct a sparse matrix that maps the m-length vector to a
+    a**l vector"""
 
     # Set global parameters for later use
     global A_sparse
@@ -191,6 +208,7 @@ def construct_A_sparse():
 
 
 def construct_E_sparse():
+    """construct the diagonal matrix containing noise variance"""
 
     # Set global parameters for later use
     global E_sparse
@@ -203,11 +221,22 @@ def construct_E_sparse():
 
 # multiply by L
 def L_opt(phi):
+    """multiply L by the vector phi"""
     return L_sparse.dot(phi)
 
 
-# multiply by any isotropic matrix whose eigenvalues are given by lambdas
 def M_opt(v, lambdas):
+    """
+    return the value M.v
+
+    Keyward arguments:
+
+    v -- a vector of length a**l
+
+    lambdas -- l + 1 vector of nonnegative values that specify the 
+    eigenvalues of a matrix M
+    """
+
     b_k = sp.array(sp.mat(
         MAT_inv) * sp.mat(sp.array(sp.mat(W_kd).T * sp.mat(lambdas).T).ravel()).T).ravel()
     max_power = len(b_k) - 1
@@ -222,8 +251,8 @@ def M_opt(v, lambdas):
     return Kv
 
 
-# multiply by d-adjacenty matrix
 def R_d_opt(v):
+    """multiply by d-adjacenty matrix"""
     max_power = len(c_k) - 1
     Lsv = np.zeros([G, len(c_k)])
     Lsv[:, 0] = c_k[0] * v
@@ -236,8 +265,8 @@ def R_d_opt(v):
     return Rdv
 
 
-# multiply by the whole covariance matrix. b_k is set by lda_star
 def K_opt(v):
+    """multiply by the whole covariance matrix. b_k is set by lda_star"""
 
     max_power = len(b_k) - 1
     Lsv = np.zeros([G, len(b_k)])
@@ -251,8 +280,8 @@ def K_opt(v):
     return Kv
 
 
-# multiply by K_BB + E. m by m
 def K_BB_E(v):
+    """ multiply by the m by m matrix K_BB + E"""
     return A_sparse.T.dot(K_opt(A_sparse.dot(v))) + E_sparse.dot(v)
 
 
@@ -260,6 +289,9 @@ def K_BB_E(v):
 
 
 def compute_rhod_and_Nd():
+    """compute autocorrelation function rho_d and number of sequence 
+    pairs for all distance classes, N_d"""
+
     Ays = A_sparse.dot(ys)
     A1s = A_sparse.dot(np.ones(len(ys)))
 
@@ -280,18 +312,22 @@ def compute_rhod_and_Nd():
 
 
 def Frob(lda, M, a):
+    """calculate the cost function given lambdas and a"""
     Frob1 = (sp.mat(lda) * sp.mat(M) * sp.mat(lda).T)[0, 0]
     Frob2 = 2 * sp.sum(lda * a)
     return Frob1 - Frob2
 
 
 def grad_Frob(lda, M, a):
+    """gradient of the function Frob(lda, M, a)"""
     grad_Frob1 = 2 * sp.array(sp.mat(M) * sp.mat(lda).T).ravel()
     grad_Frob2 = 2 * a
     return grad_Frob1 - grad_Frob2
 
 
 def solve_for_lambda(rho_d, N_d):
+    """solve for lambdas using least squares with the given rho_d 
+    and N_d"""
 
     # Construct rho_d_prime
     rho_d_prime = rho_d.copy()
@@ -325,27 +361,26 @@ def solve_for_lambda(rho_d, N_d):
 
 # pass variables to vc module
 
-def set_global_parameters(alpha0, l0):
+def set_global_parameters(a0, l0):
+    """Set global parameters for later use"""
+    global a, l, G, seq_to_pos_converter
 
-    # Set global parameters for later use
-    global alpha, l, G, seq_to_pos_converter
-
-    alpha = alpha0
+    a = a0
     l = l0
-    G = alpha**l
-    seq_to_pos_converter = np.flip(alpha**sp.array(range(l)), axis=0)
+    G = a**l
+    seq_to_pos_converter = np.flip(a**sp.array(range(l)), axis=0)
 
 
-def preliminary_preparation(alpha, l):
+def preliminary_preparation(a, l):
+    """preparing all data-indepdent objects given a and l"""
 
     # Pass a,l
-    set_global_parameters(alpha, l)
+    set_global_parameters(a, l)
 
     # Construct L_sparse
     if not os.path.exists('sparse_matrix/L'):
         os.makedirs('sparse_matrix/L')
 
-    print('Constructing L_sparse ...')
     time_i = time.perf_counter()
     prepare_L_sparse()
     # print('%.2f sec' % (time.perf_counter() - time_i))
@@ -373,8 +408,7 @@ def preliminary_preparation(alpha, l):
 
 
 def set_data_as_global_parameters(seqs0, ys0, sig2s0):
-
-    # Set global parameters for later use
+    """Set global parameters for later use"""
     global num_data, seqs, ys, sig2s
 
     num_data = len(seqs0)
@@ -383,22 +417,21 @@ def set_data_as_global_parameters(seqs0, ys0, sig2s0):
     sig2s = sig2s0
 
 
-# pass data to vc module & make A_sparse, E_sparse, rho_d, N_d & solve for
-# lambda w/o CV
 def initialize_computation(seqs, ys, sig2s):
+    """calculate all data-dependent objects"""
 
     # Set global parameters for later use
-    global lda_star, rho_d, N_d, b_k
+    global lda_star, rho_d, N_d
 
     # Set data as global parameters
     set_data_as_global_parameters(seqs, ys, sig2s)
 
     # Construct A_sparse
     construct_A_sparse()
-    
+
     # Construct E_sparse
     construct_E_sparse()
-    
+
     # Compute rho_d and N_d
     print('Computing rho_d & N_d ...')
     time_i = time.perf_counter()
@@ -415,6 +448,8 @@ def initialize_computation(seqs, ys, sig2s):
 # Crossvalidation lambda utilities
 
 def construct_A_sparse_custom(poss):
+    """construct A_sparse using the list of positions poss"""
+
     num_data = len(poss)
 
     # Construct A with positions of the input sequences
@@ -427,6 +462,8 @@ def construct_A_sparse_custom(poss):
 
 
 def compute_rhod_and_Nd_custom(val, list):
+    """calculate rho_d and N_d with specified list of values 
+    val and list"""
 
     A_sparse_custom = construct_A_sparse_custom(list)
 
@@ -445,6 +482,8 @@ def compute_rhod_and_Nd_custom(val, list):
 
 
 def Frob_reg(theta, M, a, beta):
+    """cost function for regularized least square method for inferring 
+    lambdas"""
     Frob1 = sp.exp(theta).dot(M).dot(sp.exp(theta))
     Frob2 = 2 * sp.exp(theta).dot(a)
     # return Frob1 - Frob2 + beta * theta. dot(Rmat).dot(theta)
@@ -452,6 +491,15 @@ def Frob_reg(theta, M, a, beta):
 
 
 def solve_lambda(ys, list, vars, betas):
+    """solve for lambdas using regularized least squares for a list of 
+    regularization parameters betas
+
+    Keyword arguments:
+    ys -- vector of values
+    list -- list of positions for values in ys
+    vars -- noise variance for values in ys
+    betas -- list of regulariztion parameter
+    """
 
     # Construct rho_d_prime
     rho_d_prime, N_d = compute_rhod_and_Nd_custom(ys, list)
@@ -486,6 +534,8 @@ def solve_lambda(ys, list, vars, betas):
 
 
 def solve_lambda_single_beta(ys, list, vars, beta):
+    """solve for lambdas using regularized least squares with 
+    regularization parameter provided by beta"""
 
     # Construct rho_d_prime
     rho_d_prime, N_d = compute_rhod_and_Nd_custom(ys, list)
@@ -511,6 +561,11 @@ def solve_lambda_single_beta(ys, list, vars, beta):
 
 
 def lambdaCV(val, tr, var, betas, nfolds=10):
+    """
+    Solve for optimal lambdas using regularized least squares with 
+    regularization parameter chosen using crossvalidation
+
+    """
     m = len(betas)
     order = list(range(len(tr)))
     rd.shuffle(order)
@@ -538,6 +593,7 @@ def lambdaCV(val, tr, var, betas, nfolds=10):
 
 # Estimate MAP
 def compute_posterior_mean(target_seqs=None):
+    """compute the MAP"""
 
     # Set b_k = coeffs of K in L**k
     global b_k
@@ -547,14 +603,14 @@ def compute_posterior_mean(target_seqs=None):
     rho = sp.array(sp.mat(W_kd).T * sp.mat(lda_star).T).ravel()
     b_k = sp.array(sp.mat(MAT_inv) * sp.mat(rho).T).ravel()
 
-    # Solve 'alpha' with ys
+    # Solve 'a' with ys
 
     Kop = LinearOperator((num_data, num_data), matvec=K_BB_E)
-    alpha_star = sp.sparse.linalg.minres(Kop, ys, tol=1e-9)
+    a_star = sp.sparse.linalg.minres(Kop, ys, tol=1e-9)
 
     # Compute posterior mean
 
-    post_means = K_opt(A_sparse.dot(alpha_star[0]))
+    post_means = K_opt(A_sparse.dot(a_star[0]))
 
     # If target_seqs is specified, pick up the corresponding components
     # if target_seqs is not None:
@@ -570,6 +626,7 @@ def compute_posterior_mean(target_seqs=None):
 
 
 def compute_posterior_mean_ex(seqs, ys, sig2s):
+    """compute MAP for external use"""
 
     global lda_star
 
@@ -594,6 +651,9 @@ def compute_posterior_mean_ex(seqs, ys, sig2s):
 
 
 def compute_posterior_variance(target_seqs=None):
+    """compute posterior variances for a list of sequences
+    Keyword arguments:
+    target_seqs -- list of sequences to compute for"""
 
     # Set global parameters for later use
     global b_k, seqlist
@@ -610,7 +670,7 @@ def compute_posterior_variance(target_seqs=None):
 
     # If target_seqs is not specified, set it to all sequences
     if target_seqs is None:
-        bases = np.array(range(alpha))
+        bases = np.array(range(a))
         target_seqs = list(itertools.product(bases, repeat=l))
 
     K_Bi = np.zeros([len(seqlist), len(target_seqs)])
@@ -624,8 +684,8 @@ def compute_posterior_variance(target_seqs=None):
     print("computing posterior variance")
     for i in tqdm(range(len(target_seqs))):
 
-        alpha_star = cg(Kop, K_Bi[:, i])[0]
-        post_vars.append(K_ii - np.sum(K_Bi[:, i] * alpha_star))
+        alph = cg(Kop, K_Bi[:, i])[0]
+        post_vars.append(K_ii - np.sum(K_Bi[:, i] * alph))
 
     # Return
     return np.array(post_vars)
@@ -634,6 +694,7 @@ def compute_posterior_variance(target_seqs=None):
 # posterior sampling
 
 def prepare_pos_sampling():
+    """construct all objects needed for posterior sampling using HMC"""
     global E0
     construct_A_sparse()
     E0 = dia_matrix((A_sparse.dot(
@@ -641,14 +702,27 @@ def prepare_pos_sampling():
 
 
 def grad_U(q):
+    """returns the gradient of the potential energy at position q"""
     return(M_opt(q, inv(lda_star)) + E0.dot(q))
 
 
 def S(q):
+    """returns the potential energy for position q"""
     return (1 / 2) * q.dot(grad_U(q))
 
 
 def leapfrog(q, p, m, potential, path_len, step_size):
+    """perform leapfrog integration
+
+    Keyword arguments:
+    q -- starting position vector
+    p -- starting momentum vector
+    m -- scaling factor for kinetic energy
+    potential -- function for calculating the potential energy
+    path_len --- leapfrog integration length
+    step_size -- size of one leapfrog step
+    """
+
     q, p = np.copy(q), np.copy(p)
 
     _, dVdq = potential(q)
@@ -667,6 +741,7 @@ def leapfrog(q, p, m, potential, path_len, step_size):
 
 
 class DualAveragingStepSize:
+    """update stepsize for the leapfrog function during tuning steps"""
 
     def __init__(self, initial_step_size, target_accept=0.5, gamma=0.05, t0=10.0, kappa=0.75):
         # proposals are biased upwards to stay away from 0.
@@ -702,6 +777,7 @@ class DualAveragingStepSize:
 
 
 def potential(q):
+    """return both potential energy and its gradient at position q"""
     return [S(q), grad_U(q)]
 
 
@@ -714,6 +790,20 @@ def hamiltonian_monte_carlo(
         num_steps=100,
         max_energy_change=1000.0,
         intermediate_output=True):
+    """perform HMC sampling
+
+    Keyword arguments:
+    n_samples: number of samples to draw from the posterior
+    m: scaling factor for the kinetic energy
+    initial_position: starting position
+    tune: number of tuning steps
+    initial_step_size: initial leapfrog step size
+    num_steps: number of leapfrog steps per iteraction
+    max_energy_change: set maximum difference between starting ann and 
+    final total energy: for numerical stability
+    intermediate_output: output intermediate samples and variances
+
+    """
 
     global step_size, acceptance_ratio
 
@@ -821,73 +911,10 @@ def hamiltonian_monte_carlo(
     return np.array(samples[1 + tune:]), np.var(samples[1 + tune:], axis=0)
 
 
-def hamiltonian_monte_carlo_naive(q_start, m, L0, e0, num_samples, frac=0.2):
-        # Initiate iteration
-    q = q_start.copy()
-    S_q_old = S(q)
-    grad_U_q_old = grad_U(q)
-
-    # HMC iterations
-    q_samples = np.zeros([G, num_samples])
-    p_samples = np.zeros([G, num_samples])
-    num_acceptance = 0
-    acceptance_rate_curve = np.zeros(num_samples)
-
-    for k in range(num_samples):
-        print(" --sampling HMC step " + str(k))
-        # Update p
-        p = np.random.normal(loc=0, scale=m, size=G)
-
-        #q_old, p_old = q, p
-        q_old = q.copy()
-        p_old = p.copy()
-        log_P_old = - S_q_old - 1 / 2 * m * np.sum(p_old**2)
-
-        # Randomly vary L & e
-        L = np.random.randint(int((1 - frac) * L0), int((1 + frac) * L0) + 1)
-        e = np.random.uniform((1 - frac) * e0, (1 + frac) * e0)
-
-        # Leapfrog steps
-        p -= 1 / 2 * e * grad_U_q_old
-        leapfrog_steps = 0
-        while leapfrog_steps < L - 1:
-            q += e / m * p
-            p -= e * grad_U(q)
-            leapfrog_steps += 1
-        q += e / m * p
-        grad_U_q = grad_U(q)
-        p -= 1 / 2 * e * grad_U_q
-
-        # Compute probability ratio
-        S_q = S(q)
-        log_P = - S_q - 1 / 2 * m * np.sum(p**2)
-        log_r = log_P - log_P_old
-
-        # Accept/Reject proposed q
-        if log_r > np.lib.scimath.log(np.random.random()):
-            q = q
-            S_q_old = S_q
-            grad_U_q_old = grad_U_q
-            num_acceptance += 1
-        else:
-            q = q_old
-            S_q_old = S_q_old
-            grad_U_q_old = grad_U_q_old
-
-        # Save q
-        q_samples[:, k] = q
-        # Save p
-        p_samples[:, k] = p
-
-        acceptance_rate_curve[k] = num_acceptance / (k + 1)
-        print("current acceptance ratio = ", str(num_acceptance / (k + 1)))
-
-    acceptance_rate = num_acceptance / num_samples
-
-    return q_samples, p_samples, acceptance_rate, acceptance_rate_curve
-
-
 def compute_pot_scale_red_facs(components, multi_phi_samples0, from_to):
+    """
+    calculate the potential scale reduction factors for all sequences
+    """
 
     # Crop the original multi_phi_samples
     multi_phi_samples = multi_phi_samples0[:, :, from_to[0]:from_to[1]]
@@ -950,6 +977,7 @@ def compute_pot_scale_red_facs(components, multi_phi_samples0, from_to):
 
 
 def plot_trajectory(ij, starting_phis, multi_phi_samples0, from_to, colors, xlimits, ylimits):
+    """plot HMC trajectory for specify samples i and j"""
 
     # Crop the original multi_phi_samples
     multi_phi_samples = multi_phi_samples0[:, :, from_to[0]:from_to[1]]
@@ -976,7 +1004,7 @@ def plot_trajectory(ij, starting_phis, multi_phi_samples0, from_to, colors, xlim
             plt.scatter(sp.array([0]), phi_samples[i, 0],
                         marker='+', s=200, color=colors[k], zorder=2)
             plt.plot(sp.array(range(num_samples)), phi_samples[
-                     i, :], color=colors[k], alpha=0.4, zorder=1)
+                     i, :], color=colors[k], a=0.4, zorder=1)
 
         plt.xlabel('Iteration', fontsize=14)
         plt.ylabel(r'$\phi_{%s}$' % np.array(seqsAll)[i], fontsize=16)
@@ -1004,7 +1032,7 @@ def plot_trajectory(ij, starting_phis, multi_phi_samples0, from_to, colors, xlim
             plt.scatter(phi_samples[i, 0], phi_samples[
                         j, 0], marker='+', s=200, color=colors[k], zorder=2)
             plt.plot(phi_samples[i, :], phi_samples[j, :],
-                     color=colors[k], alpha=0.4, zorder=1)
+                     color=colors[k], a=0.4, zorder=1)
 
         plt.xlabel(r'$\phi_{%d}$' % i, fontsize=16)
         plt.ylabel(r'$\phi_{%d}$' % j, fontsize=16)
@@ -1016,6 +1044,7 @@ def plot_trajectory(ij, starting_phis, multi_phi_samples0, from_to, colors, xlim
 
 
 def combine_samples(multi_phi_samples0, from_to):
+    """combine multiple hmc samples for compute_pot_scale_red_facs()"""
 
     # Crop the original multi_phi_samples
     multi_phi_samples = multi_phi_samples0[:, :, from_to[0]:from_to[1]]
@@ -1042,7 +1071,7 @@ def combine_samples(multi_phi_samples0, from_to):
 
 def plot_distribution(components, map_estimate, samples, num_bins, colors, xlimits):
 
-    # Plot posterior distribution of specified components of phi or Q
+    """Plot posterior distribution of specified components of phi or Q"""
     if type(components) == int:
         I = range(components)
     elif type(components) == list:
@@ -1072,7 +1101,7 @@ def plot_distribution(components, map_estimate, samples, num_bins, colors, xlimi
 
             plt.figure(i)
             plt.bar(bin_centers, hist, width=bin_width,
-                    color=colors[j], alpha=0.5, edgecolor=colors[j])
+                    color=colors[j], a=0.5, edgecolor=colors[j])
 
         plt.xlim(xlimits)
         plt.show()

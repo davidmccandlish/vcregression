@@ -32,7 +32,7 @@ import vc_regression as vc
 
 
 def str2bool(v):
-    return v.lower() in ("True", "true", "t", "1")
+    return v in ("True", "true", "t", "1")
 
 
 args = parser.parse_args()

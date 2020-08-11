@@ -20,7 +20,7 @@ Installation
 Quick start
 ------------
 
-Estimating **variance components**
+Estimate **variance components**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 
@@ -38,7 +38,7 @@ Calculate **posterior variance** for a list of sequences
 
   python3 vc_pos_var.py 4 8 -name smn1 -data data/Smn1/smn1data.csv -lambdas smn1/lambdas.txt -seqsvar data/Smn1/smn1seqpos.csv
 
-Draw 200 samples from the **posterior distribution** using *Hamiltonian Monte Carlo (HMC)*
+Sample from the **posterior** using *HMC*
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 

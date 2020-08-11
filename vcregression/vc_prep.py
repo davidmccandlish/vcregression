@@ -28,7 +28,6 @@ from scipy.special import comb
 from scipy.spatial.distance import hamming
 from scipy.sparse.linalg import LinearOperator
 from scipy.sparse.linalg import cg
-import mock
 import vc_regression as vc
 
 

@@ -3,7 +3,7 @@ vcregression is a command line interface for statistical inference of sequence-f
 
 ## Install all dependencies:
 ```
-pip install requirements.txt
+pip install  -r requirements.txt
 ```
 
 

@@ -9,7 +9,7 @@ Implementation
 This *CLI* estimates the prior **lambdas** which is needed for all subsequent analyses.
 
   .. argparse::
-     :filename: ../vc_prep.py
+     :filename: ../../vc_prep.py
      :func: parser
      :prog: vc_prep
 

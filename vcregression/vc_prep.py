@@ -3,7 +3,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("a", help="alphabet size", type=int)
 parser.add_argument("l", help="sequence length", type=int)
 parser.add_argument("-name", help="name of output folder")
-parser.add_argument("-data", help="path to input data",  type=str, required=True)
+parser.add_argument("-data", help="path to input data",
+                    type=str, required=True)
 parser.add_argument(
     "-cv", help="estimate lambdas using regularization with regularization parameter chosen with 10-fold crossvalidation", default=True)
 
@@ -27,7 +28,7 @@ from scipy.special import comb
 from scipy.spatial.distance import hamming
 from scipy.sparse.linalg import LinearOperator
 from scipy.sparse.linalg import cg
-
+import mock
 import vc_regression as vc
 
 
@@ -73,7 +74,8 @@ AA2N = dict([(sorted(alphabet)[i], i) for i in range(len(alphabet))])
 N2AA = {v: k for k, v in AA2N.items()}
 AA = list(AA2N.keys())
 seqsAll = [''.join(seq) for seq in itertools.product(AA, repeat=l)]
-pd.DataFrame(seqsAll).to_csv(outdir + "/sequences.txt", header=None, index=None)
+pd.DataFrame(seqsAll).to_csv(
+    outdir + "/sequences.txt", header=None, index=None)
 
 
 def seqAA2num(seq):
@@ -136,22 +138,19 @@ if cv is True:
     lda = vc.solve_lambda_single_beta(ys, tr, sig2s, beta_cv)
 
     print("lambdas = ", str(lda))
- 
+
 else:
 
-	lda = lambdas_naive
-	print("lambdas = ", str(lda))
- 
+    lda = lambdas_naive
+    print("lambdas = ", str(lda))
+
 pd.DataFrame(lda, index=rownames).to_csv(outdir + "/lambdas.txt", header=None)
 
 
-mks = [comb(l,k)*(a-1)**k for k in range(l+1)]
+mks = [comb(l, k) * (a - 1)**k for k in range(l + 1)]
 
-variance_components = np.array([lda[k]*mks[k] for k in range(1,l+1)])
+variance_components = np.array([lda[k] * mks[k] for k in range(1, l + 1)])
 variance_components /= np.sum(variance_components)
 print("variance components = ", str(variance_components))
-pd.DataFrame(variance_components, index=rownames[1:]).to_csv(outdir + "/variance_components.txt", header=None)
-
-
-
-
+pd.DataFrame(variance_components, index=rownames[1:]).to_csv(
+    outdir + "/variance_components.txt", header=None)

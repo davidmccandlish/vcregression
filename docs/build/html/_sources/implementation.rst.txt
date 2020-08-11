@@ -9,7 +9,7 @@ Implementation
 This *CLI* estimates the prior **lambdas** which is needed for all subsequent analyses.
 
   .. argparse::
-     :filename: ../vc_prep.py
+     :filename: vc_prep.py
      :func: parser
      :prog: vc_prep
 
@@ -53,7 +53,7 @@ This CLI also outputs an ``variance_component.txt`` file. Here is an example:
 This *CLI* calculates the **maximum a posterior (MAP) estimate**
 
   .. argparse::
-     :filename: ../vc_map_estimate.py
+     :filename: vc_map_estimate.py
      :func: parser
      :prog: vc_map_estimate
 
@@ -83,7 +83,7 @@ This *CLI* calculates the **analytical posterior variance** for a list of sequen
 
 
   .. argparse::
-    :filename: ../vc_pos_var.py
+    :filename: vc_pos_var.py
     :func: parser
     :prog: vc_pos_var
 
@@ -132,7 +132,7 @@ Executing this command will ouput a ``.csv`` file named ``varpos.txt``.
 This *CLI* is used to perform **posterior sampling** using the *Hamitonian Monte Carlo method*.
 
   .. argparse::
-    :filename: ../vc_hmc.py
+    :filename: vc_hmc.py
     :func: parser
     :prog: vc_hmc
 
@@ -148,8 +148,9 @@ Here is an example of a file's content:
 
 .. csv-table::
   :widths: 10, 6
+
   initial_step_size,1e-05
-  final_step_size,0.043013879413034105
+  final_step_size,0.04301
   ntunes,100
   n_steps,100
   n_samples,200
@@ -163,7 +164,7 @@ Sample file
 This is a file with the suffix ``_hmc_sample.txt`` containing all HMC samples of the run. The number of columns is equal to the number of HMC samples specified by the user and the number of rows is equal to the total number of possible sequences.
 
 Variance file
-++++++++
+++++++++++++++
 This is a file with the suffix ``_hmc_variances.txt`` containing the variance of all sequences calculated using the HMC samples.
 
 
@@ -173,7 +174,7 @@ This is a file with the suffix ``_hmc_variances.txt`` containing the variance of
 This CLI calculates the potential reduction factors for all sequences given multiple **hmc** samples output by ``vc_hmc.py``.
 
   .. argparse::
-     :filename: ../vc_hmc_diagnosis.py
+     :filename: vc_hmc_diagnosis.py
      :func: parser
      :prog: vc_hmc_diagnosis.py
 

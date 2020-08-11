@@ -1,7 +1,7 @@
 .. _dataprep:
 
 Data preparation
-==============
+=================
 The input data should be a ``.csv`` file containing three columns with no header. The three columns are `sequences`, `phenotype`, and `variance`.
 
 `sequence`

@@ -495,9 +495,10 @@
 <h2><code class="docutils literal notranslate"><span class="pre">vc_hmc.py</span></code><a class="headerlink" href="#vc-hmc-py" title="Permalink to this headline">¶</a></h2>
 <p>This <em>CLI</em> is used to perform <strong>posterior sampling</strong> using the <em>Hamitonian Monte Carlo method</em>.</p>
 <blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">vc_hmc</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">name</span> <span class="n">NAME</span><span class="p">]</span> <span class="o">-</span><span class="n">data</span> <span class="n">DATA</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">LAMBDAS</span> <span class="p">[</span><span class="o">-</span><span class="n">MAP</span> <span class="n">MAP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">step_size</span> <span class="n">STEP_SIZE</span><span class="p">]</span> <span class="o">-</span><span class="n">n_steps</span> <span class="n">N_STEPS</span>
-              <span class="o">-</span><span class="n">n_samples</span> <span class="n">N_SAMPLES</span> <span class="p">[</span><span class="o">-</span><span class="n">n_tunes</span> <span class="n">N_TUNES</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">starting_position</span> <span class="p">{</span><span class="n">mode</span><span class="p">,</span><span class="n">random</span><span class="p">,</span><span class="n">custom</span><span class="p">}]</span>
-              <span class="p">[</span><span class="o">-</span><span class="n">starting_position_path</span> <span class="n">QPATH</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">intermediate_output</span> <span class="n">INTERMEDIATE_OUTPUT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">sample_name</span> <span class="n">SAMPLE_NAME</span><span class="p">]</span>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">vc_hmc</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">name</span> <span class="n">NAME</span><span class="p">]</span> <span class="o">-</span><span class="n">data</span> <span class="n">DATA</span> <span class="o">-</span><span class="n">lambdas</span> <span class="n">LAMBDAS</span> <span class="p">[</span><span class="o">-</span><span class="n">MAP</span> <span class="n">MAP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">step_size</span> <span class="n">STEP_SIZE</span><span class="p">]</span> <span class="o">-</span><span class="n">n_steps</span>
+              <span class="n">N_STEPS</span> <span class="o">-</span><span class="n">n_samples</span> <span class="n">N_SAMPLES</span> <span class="p">[</span><span class="o">-</span><span class="n">n_tunes</span> <span class="n">N_TUNES</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">starting_position</span> <span class="p">{</span><span class="n">mode</span><span class="p">,</span><span class="n">random</span><span class="p">,</span><span class="n">custom</span><span class="p">}]</span>
+              <span class="p">[</span><span class="o">-</span><span class="n">starting_position_path</span> <span class="n">QPATH</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">intermediate_output</span> <span class="n">INTERMEDIATE_OUTPUT</span><span class="p">]</span>
+              <span class="p">[</span><span class="o">-</span><span class="n">sample_name</span> <span class="n">SAMPLE_NAME</span><span class="p">]</span>
               <span class="n">a</span> <span class="n">l</span>
 </pre></div>
 </div>
@@ -566,6 +567,38 @@
 <h4>Summary file<a class="headerlink" href="#summary-file" title="Permalink to this headline">¶</a></h4>
 <p>This is a file with the suffix <code class="docutils literal notranslate"><span class="pre">_hmc_summary.txt</span></code> containing parameters for the HMC run.
 Here is an example of a file’s content:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 63%" />
+<col style="width: 38%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>initial_step_size</p></td>
+<td><p>1e-05</p></td>
+</tr>
+<tr class="row-even"><td><p>final_step_size</p></td>
+<td><p>0.04301</p></td>
+</tr>
+<tr class="row-odd"><td><p>ntunes</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-even"><td><p>n_steps</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-odd"><td><p>n_samples</p></td>
+<td><p>200</p></td>
+</tr>
+<tr class="row-even"><td><p>start_time</p></td>
+<td><p>2020-07-28-16-27</p></td>
+</tr>
+<tr class="row-odd"><td><p>finish_time</p></td>
+<td><p>2020-07-28-16-59</p></td>
+</tr>
+<tr class="row-even"><td><p>total_time</p></td>
+<td><p>0:32:00</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="sample-file">
 <h4>Sample file<a class="headerlink" href="#sample-file" title="Permalink to this headline">¶</a></h4>

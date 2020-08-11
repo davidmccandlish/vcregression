@@ -89,3 +89,7 @@ latex_elements = {
         \\usepackage{inconsolata}
     ''',
 }
+
+# import mock
+# for mod in ["vc_regression"]:
+#     sys.modules[mod] = mock.Mock()

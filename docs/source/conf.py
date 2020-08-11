@@ -25,6 +25,8 @@ author = 'Juannan Zhou and David M. McCandlish'
 release = '0.1'
 realease = '0.1'
 
+master_doc = 'index'
+
 
 # -- General configuration ---------------------------------------------------
 

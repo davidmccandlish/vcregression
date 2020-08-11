@@ -3,4 +3,4 @@ scipy
 pandas
 matplotlib
 tqdm
-sphinxarg
+sphinx-argparse

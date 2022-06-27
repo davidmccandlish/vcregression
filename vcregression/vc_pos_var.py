@@ -1,5 +1,6 @@
 import argparse
 
+# add arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("a", help="alphabet size", type=int)
 parser.add_argument("l", help="sequence length", type=int)
@@ -32,8 +33,6 @@ from scipy.special import comb
 from scipy.spatial.distance import hamming
 from scipy.sparse.linalg import LinearOperator
 from scipy.sparse.linalg import cg
-
-
 import vc_regression as vc
 
 

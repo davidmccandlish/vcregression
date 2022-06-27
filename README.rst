@@ -28,7 +28,7 @@ Installation
 
 
 Quick start
-------------
+-------------
 
 For a demonstration of ``vcvregression`` using a sample dataset of human *5' splice sites* (Wong et al. 2018) [#wong2018]_, run the following command lines. Make sure you are working in the subdirectory ``vcregression``.
 

@@ -1,4 +1,6 @@
 import argparse
+
+# add arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("a", help="alphabet size", type=int)
 parser.add_argument("l", help="sequence length", type=int)
@@ -6,8 +8,6 @@ parser.add_argument("-name", help="name of output folder")
 parser.add_argument("-data", help="path to input data",  type=str, required=True)
 parser.add_argument("-lambdas", help="path to lambdas",
                     type=str, required=True)
-
-
 import numpy as np
 import scipy as sp
 import itertools
@@ -27,8 +27,6 @@ from scipy.special import comb
 from scipy.spatial.distance import hamming
 from scipy.sparse.linalg import LinearOperator
 from scipy.sparse.linalg import cg
-
-
 import vc_regression as vc
 
 
@@ -49,7 +47,7 @@ name = args.name
 outdir = name
 
 
-# QC
+# Check if sequence space if too large
 if a**l > 5000000:
     print("sequence space is to big!")
     exit()

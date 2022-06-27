@@ -22,6 +22,7 @@ import vc_regression as vc
 import argparse
 
 
+# add arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-samples", help="tuple of paths to HMC samples",
                     dest="samplepaths", nargs="+", type=str, required=True)
@@ -70,7 +71,8 @@ pd.DataFrame(pot_scale_red_facs, index=seqsAll).to_csv(
 
 print('potential scale reduction factor:')
 print('%.3f (%s) ~ %.3f (%s)' %
-      (pot_scale_red_facs.min(), np.array(seqsAll)[pot_scale_red_facs.argmin()], pot_scale_red_facs.max(), np.array(seqsAll)[pot_scale_red_facs.argmax()]))
+      (pot_scale_red_facs.min(), np.array(seqsAll)[pot_scale_red_facs.argmin()], \
+        pot_scale_red_facs.max(), np.array(seqsAll)[pot_scale_red_facs.argmax()]))
 
 
 from_sample, to_sample = 1, chainlength
@@ -78,7 +80,6 @@ colors = ['blue', 'orange', 'green', 'red', 'purple',
           'pink', 'brown', 'violet', 'maroon', 'gold']
 xlimits, ylimits = None, None
 
-# # ----------
 
 j = pot_scale_red_facs.argmax()
 vc.plot_trajectory([j, j], initial_phis, allsamples, [

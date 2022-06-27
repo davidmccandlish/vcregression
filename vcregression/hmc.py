@@ -36,9 +36,6 @@ class hmc:
 	    for idx, p0 in enumerate(momentum.rvs(size=size)):
 	        print("currently working on step " + str(idx + 1))
 
-	        # num_steps_r = np.random.randint(int((1 - frac)*num_steps), int((1 + frac)*num_steps) + 1)
-	        # step_size_r =  np.random.uniform((1 - frac)*step_size, (1 + frac)*step_size)
-
 	        numerical_check = False
 
 	        while numerical_check == False:
@@ -61,13 +58,10 @@ class hmc:
 	        print("initial_potential = ", initial_potential)
 	        print("final_potential = ", final_potential)
 
-	        # print("log_df(p0) = ", np.sum(momentum.logpdf(p0)))
-	        # print("log_df(p_new) = ", np.sum(momentum.logpdf(p_new)))
 
 	        start_energy = -np.sum(momentum.logpdf(p0)) + initial_potential
 	        new_energy = -np.sum(momentum.logpdf(p_new)) + final_potential
 
-	        # print("new_log_p = ", str(new_log_p))
 
 	        if new_energy == float("inf"):
 	            new_energy = 1e+10

@@ -1,4 +1,6 @@
 import argparse
+
+# add arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("a", help="alphabet size", type=int)
 parser.add_argument("l", help="sequence length", type=int)
@@ -6,7 +8,8 @@ parser.add_argument("-name", help="name of output folder")
 parser.add_argument("-data", help="path to input data",
                     type=str, required=True)
 parser.add_argument(
-    "-cv", help="estimate lambdas using regularization with regularization parameter chosen with 10-fold crossvalidation", default=True)
+    "-cv", help="estimate lambdas using regularization \
+    with regularization parameter chosen with 10-fold crossvalidation", default=True)
 
 
 import numpy as np
@@ -54,7 +57,7 @@ if not os.path.exists(outdir):
     os.makedirs(outdir)
 
 
-# QC
+# Check if sequence space is too big
 if a**l > 5000000:
     print("sequence space is to big!")
     exit()
@@ -94,11 +97,6 @@ ys = np.array(data[1])
 sig2s = np.array(data[2])
 
 
-# vc.set_data_as_global_parameters(seqs, ys, sig2s)
-# vc.construct_A_sparse()
-# vc.construct_E_sparse()
-
-
 vc.initialize_computation(seqs, ys, sig2s)
 
 all_distance_class_Q = all(map(lambda x: x > 0, vc.N_d))
@@ -110,17 +108,22 @@ lambdas_naive_positive_Q = all(map(lambda x: x > 0, lambdas_naive))
 
 
 if args.cv is True:
-    print("estimating lambdas with regularization (regularization parameter chosen using 10-fold crossvalidation)...")
+    print("estimating lambdas with regularization (regularization \
+        parameter chosen using 10-fold crossvalidation)...")
     cv = True
 
 elif not all_distance_class_Q:
-    print("certain distance classes missing from data, estimating lambdas using regularization (regularization parameter chosen with 10-fold crossvalidation)...")
+    print("certain distance classes missing from data, estimating \
+        lambdas using regularization (regularization parameter \
+        chosen with 10-fold crossvalidation)...")
     cv = True
 elif lambdas_naive_positive_Q:
     print("estimating lambdas using least squares")
     cv = False
 else:
-    print("naive lambdas contain nonpositive values, estimating lambdas using regularization (regularization parameter chosen with 10-fold crossvalidation)...")
+    print("naive lambdas contain nonpositive values, estimating \
+        lambdas using regularization (regularization parameter \
+        chosen with 10-fold crossvalidation)...")
     cv = True
 
 

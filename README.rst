@@ -57,4 +57,4 @@ Sample from the **posterior** using *HMC*
   python3 vc_hmc.py 4 8 -name smn1 -data data/Smn1/smn1data.csv -lambdas smn1/lambdas.txt -MAP smn1/map.txt -step_size 1e-05 -n_steps 10 -n_samples 200 -n_tunes 20 -starting_position random -intermediate_output True -sample_name hmc1 -intermediate_output False
 
 
-.. [#wong2018] Wong et al. 2018. *Quantitative Activity Profile and Context Dependence of All Human 50 Splice Sites.*
+.. [#wong2018] Wong et al. 2018. *Quantitative Activity Profile and Context Dependence of All Human 5' Splice Sites.*

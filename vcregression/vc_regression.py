@@ -38,7 +38,6 @@ def gd(x, y):
 
 # a,l - dependent functions
 
-
 def seq2pos(seq):
     """return lexicographical position of a numerical sequence"""
     nums = []
@@ -205,6 +204,26 @@ def construct_A_sparse():
 
     # Save A as sparse matrix
     A_sparse = csr_matrix((values, (row_ids, col_ids)), shape=(G, num_data))
+
+
+def make_A_sparse(seqs):
+    """construct a sparse matrix that maps the m-length vector to a
+    a**l vector"""
+
+    # Set global parameters for later use
+    global A_sparse
+
+    # Convert each sequence to its corresponding position
+    poss = sp.array(sp.mat(seqs) * sp.mat(seq_to_pos_converter).T).ravel()
+
+    # Construct A with positions of the input sequences
+    row_ids, col_ids, values = poss, np.arange(num_data), np.ones(num_data)
+
+    # Save A as sparse matrix
+    A_sparse = csr_matrix((values, (row_ids, col_ids)), shape=(G, num_data))
+
+    return A_sparse
+
 
 
 def construct_E_sparse():
@@ -392,10 +411,6 @@ def preliminary_preparation(a, l):
     W_kd_mat()
 
     # Construct second order difference matrix for regularization
-    # Diff2 = np.zeros((l - 1, l + 1))
-
-    # for i in range(Diff2.shape[0]):
-    #     Diff2[i, i:i + 3] = [-1, 2, -1]
 
     Diff2 = np.zeros((l - 2, l))
 
@@ -475,10 +490,10 @@ def compute_rhod_and_Nd_custom(val, list):
         A1s = A_sparse_custom.dot(np.ones(len(val)))
         rho_d[d] = sp.sum(Ays * R_d_opt(Ays))
         N_d[d] = sp.sum(A1s * R_d_opt(A1s))
-    rho_d = [gd(rho_d[i], N_d[i]) for i in range(len(rho_d))]
+    rho_d_normed = [gd(rho_d[i], N_d[i]) for i in range(len(rho_d))]
 
     # Return
-    return rho_d, N_d
+    return rho_d_normed, N_d
 
 
 def Frob_reg(theta, M, a, beta):
@@ -488,6 +503,63 @@ def Frob_reg(theta, M, a, beta):
     Frob2 = 2 * sp.exp(theta).dot(a)
     # return Frob1 - Frob2 + beta * theta. dot(Rmat).dot(theta)
     return Frob1 - Frob2 + beta * theta[1:]. dot(Rmat).dot(theta[1:])
+
+
+# def solve_lambda(ys, list, vars, betas):
+#     """solve for lambdas using regularized least squares for a list of 
+#     regularization parameters betas
+
+#     Keyword arguments:
+#     ys -- vector of values
+#     list -- list of positions for values in ys
+#     vars -- noise variance for values in ys
+#     betas -- list of regulariztion parameter
+#     """
+
+#     # Construct rho_d_prime
+#     rho_d_prime, N_d = compute_rhod_and_Nd_custom(ys, list)
+#     rho_d_prime[0] -= sp.array(vars).mean()
+
+#     M = np.zeros([l + 1, l + 1])
+#     for i in range(l + 1):
+#         for j in range(l + 1):
+#             for d in range(l + 1):
+#                 M[i, j] += N_d[d] * w(i, d) * w(j, d)
+
+#     # Construct a
+#     a = np.zeros(l + 1)
+#     for i in range(l + 1):
+#         for d in range(l + 1):
+#             a[i] += N_d[d] * w(i, d) * rho_d_prime[d]
+
+#     ldas = []
+#     thetas = []
+
+#     for i in range(len(betas)):
+
+#         beta = betas[i]
+
+#         res = minimize(fun=Frob_reg, args=(M, a, beta), x0=np.zeros(
+#             l + 1), method='Powell', options={'xtol': 1e-8, 'ftol': 1e-8})
+
+#         thetas.append(np.array(res.x))
+#         ldas.append(np.exp(res.x))
+
+#     return thetas, ldas
+
+def kernel_alignment_loss(theta, rho_d, N_d, beta):
+
+	rho_d_fit = np.matmul(np.exp(theta), W_kd)
+
+	N_pairs = np.sum(N_d)
+
+	frob_loss = (1/N_pairs)*np.sum(N_d*(rho_d_fit - rho_d)**2) 
+
+	reg_loss = theta[1:]. dot(Rmat).dot(theta[1:])
+
+	loss = frob_loss + beta*reg_loss
+
+	return loss
 
 
 def solve_lambda(ys, list, vars, betas):
@@ -505,18 +577,6 @@ def solve_lambda(ys, list, vars, betas):
     rho_d_prime, N_d = compute_rhod_and_Nd_custom(ys, list)
     rho_d_prime[0] -= sp.array(vars).mean()
 
-    M = np.zeros([l + 1, l + 1])
-    for i in range(l + 1):
-        for j in range(l + 1):
-            for d in range(l + 1):
-                M[i, j] += N_d[d] * w(i, d) * w(j, d)
-
-    # Construct a
-    a = np.zeros(l + 1)
-    for i in range(l + 1):
-        for d in range(l + 1):
-            a[i] += N_d[d] * w(i, d) * rho_d_prime[d]
-
     ldas = []
     thetas = []
 
@@ -524,7 +584,7 @@ def solve_lambda(ys, list, vars, betas):
 
         beta = betas[i]
 
-        res = minimize(fun=Frob_reg, args=(M, a, beta), x0=np.zeros(
+        res = minimize(fun=kernel_alignment_loss, args=(rho_d_prime, N_d, beta), x0=np.zeros(
             l + 1), method='Powell', options={'xtol': 1e-8, 'ftol': 1e-8})
 
         thetas.append(np.array(res.x))
@@ -541,23 +601,18 @@ def solve_lambda_single_beta(ys, list, vars, beta):
     rho_d_prime, N_d = compute_rhod_and_Nd_custom(ys, list)
     rho_d_prime[0] -= sp.array(vars).mean()
 
-    M = np.zeros([l + 1, l + 1])
-    for i in range(l + 1):
-        for j in range(l + 1):
-            for d in range(l + 1):
-                M[i, j] += N_d[d] * w(i, d) * w(j, d)
-
     # Construct a
     a = np.zeros(l + 1)
     for i in range(l + 1):
         for d in range(l + 1):
             a[i] += N_d[d] * w(i, d) * rho_d_prime[d]
 
-    res = minimize(fun=Frob_reg, args=(M, a, beta), x0=np.zeros(
-        l + 1), method='Powell', options={'xtol': 1e-8, 'ftol': 1e-8})
+    res = minimize(fun=kernel_alignment_loss, args=(rho_d_prime, N_d, beta), x0=np.zeros(
+        l + 1), method='Powell',options={'xtol': 1e-8, 'ftol': 1e-8})
 
     # Return
     return np.exp(res.x)
+
 
 
 def lambdaCV(val, tr, var, betas, nfolds=10):
@@ -571,8 +626,8 @@ def lambdaCV(val, tr, var, betas, nfolds=10):
     rd.shuffle(order)
     folds = np.array_split(np.array(order), nfolds)
 
-    rhods = np.zeros((10, l + 1))
-    Nds = np.zeros((10, l + 1))
+    rhods = np.zeros((nfolds, l + 1))
+    Nds = np.zeros((nfolds, l + 1))
     for i in range(nfolds):
         rhods[i], Nds[i] = compute_rhod_and_Nd_custom(
             val[folds[i]], tr[folds[i]])
@@ -612,17 +667,25 @@ def compute_posterior_mean(target_seqs=None):
 
     post_means = K_opt(A_sparse.dot(a_star[0]))
 
-    # If target_seqs is specified, pick up the corresponding components
-    # if target_seqs is not None:
-    #     poss = []
-    #     for target_seq in target_seqs:
-    #         poss.append(sequence_to_position(target_seq))
-    #     post_means = np.take(post_means, poss)
-    #
-    # # Return
     return post_means
 
 # function for calculating MAP externally
+
+def compute_posterior_mean_lda(seqs, ys, sig2s, lda):
+    """compute the MAP"""
+
+    # Set b_k = coeffs of K in L**k
+    global b_k, lda_star
+
+    set_data_as_global_parameters(seqs, ys, sig2s)
+    construct_A_sparse()
+    construct_E_sparse()
+
+    lda_star = lda
+
+    fstar = compute_posterior_mean()
+
+    return fstar
 
 
 def compute_posterior_mean_ex(seqs, ys, sig2s):
@@ -634,7 +697,7 @@ def compute_posterior_mean_ex(seqs, ys, sig2s):
     construct_A_sparse()
     construct_E_sparse()
 
-    betas = 10 ** np.arange(-2, 6, .5)
+    betas = 1/(10. ** np.arange(4, 10, 1))
 
     tr = np.array([seq2pos(seqs[i]) for i in range(len(seqs))])
 
@@ -703,7 +766,7 @@ def prepare_pos_sampling():
 
 def grad_U(q):
     """returns the gradient of the potential energy at position q"""
-    return(M_opt(q, inv(lda_star)) + E0.dot(q))
+    return M_opt(q, inv(lda_star)) + E0.dot(q)
 
 
 def S(q):
@@ -1105,3 +1168,11 @@ def plot_distribution(components, map_estimate, samples, num_bins, colors, xlimi
 
         plt.xlim(xlimits)
         plt.show()
+
+
+
+
+
+
+
+

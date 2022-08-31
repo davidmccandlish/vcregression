@@ -18,6 +18,10 @@ The 4 basic functionalities of ``vcregression`` are:
 
 See the `vcregression documentation <https://vcregression.readthedocs.io/en/latest/>`_ for information about using ``vcregression``.
 
+
+See the directory `vcregression_paper <https://github.com/davidmccandlish/vcregression/tree/master/vcregression_paper>`_ for Mathematica files used to conduct the analyses to be included in the forthcoming manuscript "Higher-order epistasis and phenotypic prediction".
+
+
 Installation
 -------------
 ``vc_regression`` is a command line interface written in Python 3. To install the software, simply clone the `repository <https://github.com/davidmccandlish/vcregression>`_ to your local directory. Before running the software, install all dependencies using the ``pip`` package manager with the following command line: ::
